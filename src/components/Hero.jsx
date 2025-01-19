@@ -49,7 +49,7 @@ const Hero = () => {
             transition={{ 
               duration: 2,
               ease: [0.22, 1, 0.36, 1],
-              delay: 3.5
+              delay: 0.5
             }}
           >
             {name.map((letter, i) => (
@@ -71,7 +71,7 @@ const Hero = () => {
           className="text-5xl font-bold text-textSecondary"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 4 }}
+          transition={{ duration: 0.5, delay: 1.5 }}
         >
           I build AI-powered solutions.
         </motion.h3>
@@ -80,7 +80,7 @@ const Hero = () => {
           className="max-w-xl text-textSecondary"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 4.2 }}
+          transition={{ duration: 0.5, delay: 2 }}
         >
           I&apos;m an Artificial Intelligence Engineer specializing in building exceptional
           digital experiences. Currently, I&apos;m focused on building AI-powered
@@ -91,7 +91,7 @@ const Hero = () => {
           className="flex space-x-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 4.4 }}
+          transition={{ duration: 0.5, delay: 2.3 }}
         >
           <motion.a
             href="https://linkedin.com/in/olumideadewole"

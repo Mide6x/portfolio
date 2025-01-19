@@ -50,7 +50,7 @@ const About = () => {
         <div className="grid md:grid-cols-2 gap-8">
           <motion.div variants={itemVariants} className="space-y-4">
             <p className="text-textSecondary">
-              I have have my masters degree in Data Science from Pan-Atlantic University
+              I have a masters degree in Data Science from Pan-Atlantic University
               with a strong Distinction. My academic journey began at Ajayi Crowther
               University, where I earned my BSc. in Computer Science.
             </p>

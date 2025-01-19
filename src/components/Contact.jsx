@@ -59,14 +59,14 @@ const Contact = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.8 // Faster animation
+        staggerChildren: 0.2 // Faster animation
       }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } } // Smoother animation
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } // Smoother animation
   };
 
   const categories = ['Direct Contact', 'Professional', 'Academic', 'Social'];
