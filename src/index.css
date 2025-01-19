@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #0A192F;
+  font-family: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', system-ui, sans-serif;
+} 
