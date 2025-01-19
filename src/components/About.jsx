@@ -21,7 +21,7 @@ const About = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
   };
 
   const researchInterests = [

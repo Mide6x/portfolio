@@ -55,14 +55,15 @@ const Projects = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15
+        staggerChildren: 0.15,
+        duration: 1 // Added duration
       }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0, transition: { duration: 1 } } // Added duration
   };
 
   return (
@@ -89,7 +90,7 @@ const Projects = () => {
               className="group relative bg-lightNavy rounded-lg overflow-hidden"
               whileHover={{ 
                 scale: 1.05,
-                transition: { duration: 0.2 }
+                transition: { duration: 1 } // Added duration
               }}
             >
               <div className="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
