@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { FaExternalLinkAlt } from 'react-icons/fa';
-import { SiOpenai } from 'react-icons/si';
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { SiOpenai } from "react-icons/si";
 
 const Projects = () => {
   const [ref, inView] = useInView({
@@ -11,43 +11,46 @@ const Projects = () => {
 
   const projects = [
     {
-      title: 'NoTypeAI',
-      description: 'An Artificial Intelligence Powered Extension That Converts Speech to Text',
+      title: "NoTypeAI",
+      description:
+        "An Artificial Intelligence Powered Extension That Converts Speech to Text",
       details: [
-        'Built an extension that allows users to speak in input sections of their browser',
-        'Makes form filling on browser up to 70% faster',
-        'Added AI grammar correction ability using GPT-4',
+        "Built an extension that allows users to speak in input sections of their browser",
+        "Makes form filling on browser up to 70% faster",
+        "Added AI grammar correction ability using GPT-4",
       ],
-      tech: ['Browser Extension', 'OpenAI API', 'Speech Recognition', 'GPT-4'],
-      link: 'https://notypeai.com/',
-      period: 'Nov 2024 – Present',
-      image: '/notypeai-preview.png' // Commented out for now
+      tech: ["Browser Extension", "OpenAI API", "Speech Recognition", "GPT-4"],
+      link: "https://notypeai.com/",
+      period: "Nov 2024 – Present",
+      image: "/notypeai-preview.png",
     },
     {
-      title: 'Oúnje x dein',
-      description: 'An Artificial Intelligence Powered Recipe Sharing Platform',
+      title: "Oúnje x dein",
+      description: "An Artificial Intelligence Powered Recipe Sharing Platform",
       details: [
-        'Built a recipe-sharing platform with voice search capabilities',
-        'Developed using the MERN Stack and integrated OpenAI GPT API',
-        'Deployed the backend on Render and frontend on Netlify'
+        "Built a recipe-sharing platform with voice search capabilities",
+        "Developed using the MERN Stack and integrated OpenAI GPT API",
+        "Deployed the backend on Render and frontend on Netlify",
       ],
-      tech: ['React', 'Node.js', 'MongoDB', 'OpenAI API', 'Voice Search'],
-      link: 'https://ounje-staging.netlify.app/',
-      period: 'Sep 2024 – Oct 2024',
-      image: '/ounje-preview.png' // Commented out for now
+      tech: ["React", "Node.js", "MongoDB", "OpenAI API", "Voice Search"],
+      link: "https://ounje-staging.netlify.app/",
+      period: "Sep 2024 – Oct 2024",
+      image: "/ounje-preview.png",
     },
     {
-      title: 'Product Management System',
-      description: 'AI-Powered Product Classification System',
+      title: "SchoolsUK - AI-Powered Student Productivity Platform",
+      description: "Student Productivity Made Simple",
       details: [
-        'Designed a system to list products in a database',
-        'Integrated AI for cleaning data and accurate classification',
-        'Used MERN Stack, OpenAI API, and Cloudinary API'
+        "Designed for UK master's students to organize timetables and get class notifications",
+        "Discover university events and explore city spots with curated recommendations",
+        "Connect with classmates to build an academic network",
+        "Upload timetables via PDF or manually and receive email notifications for classes and deadlines",
       ],
-      tech: ['MERN Stack', 'OpenAI API', 'Cloudinary API', 'AI Classification'],
-      period: 'Jul 2024',
-      image: '/pms-preview.png' // Commented out for now
-    }
+      tech: ["MERN Stack", "OpenAI API", "Email Notifications", "PDF Upload"],
+      link: "https://schoolsuk.netlify.app/",
+      period: "Feb 2025 - May 2025",
+      image: "/schoolsuk-preview.png",
+    },
   ];
 
   const containerVariants = {
@@ -56,14 +59,14 @@ const Projects = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.15,
-        duration: 1 // Added duration
-      }
-    }
+        duration: 1, // Added duration
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1 } } // Added duration
+    visible: { opacity: 1, y: 0, transition: { duration: 1 } }, // Added duration
   };
 
   return (
@@ -77,7 +80,8 @@ const Projects = () => {
       >
         <motion.div variants={itemVariants} className="flex items-center">
           <h2 className="text-3xl font-bold text-textPrimary">
-            <span className="text-secondary font-mono text-xl">03.</span> Projects
+            <span className="text-secondary font-mono text-xl">03.</span>{" "}
+            Projects
           </h2>
           <div className="h-px bg-lightNavy flex-grow ml-4" />
         </motion.div>
@@ -88,20 +92,22 @@ const Projects = () => {
               key={index}
               variants={itemVariants}
               className="group relative bg-lightNavy rounded-lg overflow-hidden"
-              whileHover={{ 
+              whileHover={{
                 scale: 1.05,
-                transition: { duration: 1 } // Added duration
+                transition: { duration: 1 }, // Added duration
               }}
             >
               <div className="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-              
+
               {/* Project Image */}
               <div className="relative h-48 overflow-hidden">
-                {<img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-300"
-                />}
+                {
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-300"
+                  />
+                }
                 <div className="absolute inset-0 bg-primary/50" />
               </div>
 
@@ -159,4 +165,4 @@ const Projects = () => {
   );
 };
 
-export default Projects; 
+export default Projects;
