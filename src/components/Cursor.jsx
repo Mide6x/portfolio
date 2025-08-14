@@ -7,11 +7,13 @@ const Cursor = () => {
 
   useEffect(() => {
     const updateMousePosition = (e) => {
-      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-      setMousePosition({ 
-        x: e.clientX,
-        y: e.clientY + scrollY
-      });
+      if (e && typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        setMousePosition({ 
+          x: e.clientX,
+          y: e.clientY + scrollY
+        });
+      }
     };
 
     const handleMouseOver = (e) => {
@@ -46,8 +48,8 @@ const Cursor = () => {
       <motion.div
         style={{
           position: 'absolute',
-          left: mousePosition.x - 8,
-          top: mousePosition.y - 8,
+          left: (mousePosition.x || 0) - 8,
+          top: (mousePosition.y || 0) - 8,
           width: '16px',
           height: '16px',
           backgroundColor: '#64FFDA',
@@ -68,8 +70,8 @@ const Cursor = () => {
       <motion.div
         style={{
           position: 'absolute',
-          left: mousePosition.x - 16,
-          top: mousePosition.y - 16,
+          left: (mousePosition.x || 0) - 16,
+          top: (mousePosition.y || 0) - 16,
           width: '32px',
           height: '32px',
           border: '2px solid #64FFDA',
@@ -90,4 +92,4 @@ const Cursor = () => {
   );
 };
 
-export default Cursor; 
+export default Cursor;

@@ -1,0 +1,100 @@
+
+Changing the training data composition. Next, we compare our default of sampling specialized
+domain data proportional to the size of the domain (total amount of tokens in SlimPajama), with
+a uniform sampling over all domains. Figure 7 (baseline vs equal data) shows the downstream
+performances for both Nexus and MoE (linear). Although sampling domains differently does not
+significantly impact the downstream performance for both models, we find that it helps Nexus to
+improve specialization for all the domains in terms of expert routing probabilities (Figure 9, Appendix
+A). In particular, compared to the size proportional sampling, tokens from the C4 domain are routed
+more accurately (27.6% vs 71.1%) when data is equally sampled, which potentially impacts the
+model’s behavior for particular input sequences.
+Domain embeddings before and after projection. Finally, in Figure 8, we visualize cosine
+similarities between domains and the projected expert embeddings from the last Transformer block,
+in our main upcycling experiments at the 470M scale. Comparing the embeddings before and
+after mapping, we find that the router’s learned projection preserves the main relationship between
+domains. For instance, relatively high cosine similarity between Books & C4, and StackExchange
+& GitHub exist both between their domain embeddings and the projected expert embeddings.
+Interestingly, while preserving the main relationships, we also find that the learned projection pushes
+expert embeddings further away from each other, potentially due to our choice of only activating a
+single expert per token besides the shared expert.
+6 Related Work
+Routing Variants of MoEs. The most common MoE architecture [Shazeer et al., 2017; Lepikhin
+et al., 2020; Fedus et al., 2022] employs a linear router with a top-k routing scheme, where k typically
+equals 1 or 2. In this standard routing schema, only the k experts with the highest router gate values
+are activated. The MoE layer’s output is computed as the weighted linear combination of these
+activated experts, with the weights corresponding to the router gate values. There is substantial
+research proposing alternatives to top-k expert assignments [Hazimeh et al., 2021; Lewis et al., 2021;
+Roller et al., 2021; Zhou et al., 2022; Zuo et al., 2022]. For example, DeepSeek-MoE [Dai et al., 2024]
+introduces a routing variant where a number of experts are permanently active, always assigned to
+all tokens. Our work also adopts this “shared expert” approach for our general base expert. Another
+notable work is BASE Layers [Lewis et al., 2021], where authors formulate the token-to-expert
+assignment as a linear assignment problem. However, these efforts primarily focus on improving
+the general performance and/or training stability of MoEs. In contrast, our work puts emphasis
+adaptability and extensibility.
+Efficient MoE Training by Re-Using Existing Dense Models. Training MoEs from scratch,
+i.e. from a random weight initialization, is computationally expensive [Gale et al., 2023; Fedus et al.,
+2022] and often challenging due to training instabilities [Zoph et al., 2022]. Alternatively, recent
+works have explored re-using existing dense models to initialize MoEs, thereby enhancing training
+efficiency. Sparse Upcycling [Komatsuzaki et al., 2023] re-uses a single dense model to initialize the
+MoE by by replicating dense model’s FFN weights N times into N FFN experts in the MoE. The
+router is initialized randomly, and all other parameters are copied directly from the dense model.
+BTX [Sukhbaatar et al., 2024] extends this approach by upcycling not from a single dense model,
+but from multiple specialized dense expert models to encourage diversity in the MoE initialization.
+Furthermore, BAM [Zhang et al., 2024] expands BTX to upcycle not just FFN experts but also
+attention experts, further enhancing performance. Our work also leverages this approach by reusing
+14
+existing specialized dense experts for MoE initialization, while extending it further to facilitate
+on-the-fly adaptations for new experts specialized in unseen data domains.
+Efficient MoE Architectures. Zadouri et al. [2024] proposes replacing traditional MoE’s
+computation-heavy feed-forward network (FFN) experts with more efficient experts comprised of
+smaller vectors and adapters, which are activated in parallel to a single dense FFN. This lightweight
+architecture necessitates only a limited number of parameter updates when finetuning, offering
+efficiency advantages. However, unlike our approach, it does not leverage existing specialized dense
+models and lacks a notion of specialized experts, which are central to our method. Similar to our
+work, Muqeeth et al. [2024] and Ostapenko et al. [2024] study combining separately trained experts
+into a unified model. However, they focus on parameter-efficient adapters such as LoRA [Hu et al.,
+2021] and supervised finetuning. In this work, we focus on efficiently pre-training fully-fledged MoE
+models via upcycling.
+Adaptive MoEs and Ensemble Models. ModuleFormer [Shen et al., 2023] also aims to produce
+adaptable MoEs. The authors achieve adaptability by freezing existing MoE parameters while
+only training newly added modules with optimization constraints to the router. Unlike our work,
+ModuleFormer does not leverage existing expert dense seed models for efficiency gains, nor does it
+have a notion of specialization which is central to our work. Similar to our work, DEMix [Gururangan
+et al., 2021] independently trains different FFN experts on specialized data domains, with each
+expert functioning as a domain-specific module. Modules can be added on-the-fly for adaptability.
+Followup works BTM and C-BTM [Li et al., 2022; Gururangan et al., 2023] extend DEMix to create
+adaptive ensemble models. However, all three works use a router requiring a forward pass for every
+expert at inference instead of sparsely activating them, which significantly increases inference costs,
+especially with a large number of experts. Unlike these approaches, our router cost is approximately
+the same as standard top-k routing during both training and inference, offering a more scalable
+solution for adaptability.
+7 Conclusion
+We propose Nexus, a new LLM framework that enables efficient upcycling of specialized dense
+experts into a sparsely activated MoE model. We show that individual experts in our method retain
+their specialization after upcycling, and that our router based on expert embeddings outperforms
+previous approaches for combining the dense experts. Furthermore, the model can be extended
+efficiently with new dense experts after the initial training phase, saving much compute compared to
+re-training the upcycled model or training from scratch.
+8 Limitations
+The MoE architecture is often employed for larger models in the multi-billion parameter range,
+where efficiency is paramount. However, to facilitate a broader set of experiments, we limit our
+setup to using 2.8B parameter seed models for the main results and 470M parameter seed models
+for ablations. Furthermore, our dense experts are based on existing data sources in the SlimPajama
+dataset which is pre-defined. Future work could extend our method by discovering specialized data
+domains through unsupervised clustering similar to Gururangan et al. [2023].
+15
+9 Acknowledgements
+We would like to thank John Lin and Tim Chung for their support with data preprocessing, Sylvie
+Shi for her support with embedding the datasets, and Arkady Arkhangorodsky and David Cairuz for
+helping with and debugging downstream evaluations. We thank Felipe Cruz Salinas, for his help
+with choosing the seed model. We also thank Milad Alizadeh and James Owers-Bardsley for their
+support with the training cluster, and Viraat Aryabumi for his contributions to the downstream
+evaluation choice and visualization.
+References
+Rohan Anil, Andrew M. Dai, Orhan Firat, Melvin Johnson, Dmitry Lepikhin, Alexandre Passos,
+Siamak Shakeri, Emanuel Taropa, Paige Bailey, Zhifeng Chen, Eric Chu, Jonathan H. Clark,
+Laurent El Shafey, Yanping Huang, Kathy Meier-Hellstern, Gaurav Mishra, Erica Moreira, Mark
+Omernick, Kevin Robinson, Sebastian Ruder, Yi Tay, Kefan Xiao, Yuanzhong Xu, Yujing Zhang,
+Gustavo Hernandez Abrego, Junwhan Ahn, Jacob Austin, Paul Barham, Jan Botha, James
+Bradbury, Siddhartha Brahma, Kevin Brooks, Michele Catasta, Yong Cheng, Colin Cherry,
+Christopher A. Choquette-Choo, Aakanksha Chowdhery, Clément Crepy, Shachi Dave, Mostafa

@@ -6,28 +6,29 @@ const Thoughts = () => {
   const thoughts = [
     {
       id: 1,
-      date: new Date("2025-01-16"),
-      title: "The Empty Notepad",
-      excerpt:
-        "I brought a notepad, yet no pen. And when these thoughts arise...",
-      content: `I brought a notepad, yet no pen. And when these thoughts arise—those fleeting, feverish truths you speak, the words I must seize—I open the notepad only to find my hand empty, powerless. Ah, you cannot fathom the sting of it! That strange, hollow ache, that quiet despair. How absurd, how bitterly disappointing.
-
-God forbid such a thing should ever befall me again.`,
-    },
-    {
-      id: 2,
-      date: new Date("2024-01-18"),
-      title: "Lagos Marketers: A Study in Confidence",
-      excerpt: "There is something raw and untamed about Lagos marketers...",
-      content: `There is something raw and untamed about Lagos marketers—a rugged confidence, I will call it. A confidence forged in risk, rough-edged and relentless. **Bold** enough to seize a stranger's hand and pull them through the chaos of the market, knowing nothing of their desires yet certain—almost defiantly—that whatever they seek waits on their shelf. This confidence does not shrink when met with cold shoulders or eyes that refuse to meet theirs beneath the unforgiving Lagos sun. No, it pushes forward, unshaken. A fierce belief that they can deliver, even without knowing the request. That wild, stubborn confidence—that is what we should all carry within us.`,
-    },
-    {
-      id: 3,
       date: new Date("2025-05-22"),
       title: "AI and the Creative Spirit: A Dance of Collaboration",
       excerpt:
         "AI isn't the death of creativity—it's a renaissance in disguise.",
       content: `In the quiet hours of my research, a thought crystallizes: AI isn't the death of creativity—it's a renaissance in disguise. Like the invention of the camera, which didn't kill painting but birthed impressionism, AI isn't here to replace the artist but to expand the canvas of what's possible.`,
+    },
+    {
+      id: 2,
+      date: new Date("2024-08-28"),
+      title: "Nexus: The Future of Modular AI Intelligence",
+      excerpt:
+        "A breakthrough in Mixture of Experts that promises to revolutionize how we build and adapt AI systems...",
+      content: `The paper "Nexus: Specialization meets Adaptability for Efficiently Training Mixture of Experts" by Gritsch et al. presents a compelling solution to one of AI's most persistent challenges: how to create models that are simultaneously efficient, specialized, and adaptable to new domains.
+
+The core innovation lies in their "upcycling" approach—transforming existing dense models into Mixture of Experts (MoE) architectures without starting from scratch. Traditional MoE training requires massive computational resources and careful orchestration of multiple experts from the beginning. Nexus changes this paradigm entirely.
+
+What makes Nexus particularly elegant is its adaptive routing mechanism. Instead of using simple linear routers that treat all experts equally, Nexus learns to project expert embeddings from domain representations. This means the model understands not just what each expert can do, but when and why to use them based on the input's domain characteristics.
+
+The results speak volumes: up to 2.1% improvement over baseline upcycling methods, and a remarkable 18.8% gain when extending the MoE with new experts using limited fine-tuning data. But the real breakthrough isn't in the numbers—it's in the flexibility.
+
+Imagine an open-source ecosystem where researchers and practitioners can continuously assemble their own "MoE-mix" according to their specific needs. Need a model that excels at both scientific reasoning and creative writing? Simply upcycle existing specialized models and let Nexus handle the intelligent routing between them.
+
+This work represents a fundamental shift from monolithic AI systems to modular, composable intelligence. It's not just about making models bigger or faster—it's about making them smarter about when and how to use their capabilities.`,
     },
   ];
 
@@ -42,7 +43,7 @@ God forbid such a thing should ever befall me again.`,
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-lightNavy p-6 rounded-lg space-y-4 hover:bg-lightNavy/50 transition-colors"
+              className="bg-lightNavy/30 p-6 rounded-lg border border-lightNavy/50 space-y-4 hover:bg-lightNavy/50 transition-colors"
             >
               <Link to={`/thoughts/${thought.id}`} className="block space-y-2">
                 <time className="text-secondary font-mono text-sm">

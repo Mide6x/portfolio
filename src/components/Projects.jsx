@@ -11,6 +11,25 @@ const Projects = () => {
 
   const projects = [
     {
+      title: "SBL Invoice",
+      description: "AI-Powered Invoice Software for Modern Businesses",
+      details: [
+        "Built a comprehensive invoicing platform with AI integration for business data insights",
+        "Implemented multi-payment gateway support including bank transfers, and Paystack",
+        "Created automated payment reminders and customer interaction functionality",
+        "Developed expense management and real-time financial reporting features",
+      ],
+      tech: [
+        "AI Integration",
+        "Payment Processing",
+        "Cloud Platform",
+        "Business Analytics",
+      ],
+      link: "https://invoice.southbytelabs.com/",
+      period: "2024 – Present",
+      image: "/sblinvoice.png",
+    },
+    {
       title: "NoTypeAI",
       description:
         "An Artificial Intelligence Powered Extension That Converts Speech to Text",

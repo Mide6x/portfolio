@@ -1,8 +1,16 @@
-import { motion } from 'framer-motion';
-import { FaLinkedin, FaYoutube, FaGithub, FaResearchgate } from 'react-icons/fa';
-import { SiGooglescholar } from 'react-icons/si';
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import {
+  FaLinkedin,
+  FaYoutube,
+  FaGithub,
+  FaResearchgate,
+} from "react-icons/fa";
+import { SiGooglescholar } from "react-icons/si";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   const letterAnimation = {
     hidden: { y: 20, opacity: 0 },
     visible: (i) => ({
@@ -11,9 +19,9 @@ const Hero = () => {
       transition: {
         delay: i * 0.05 + 0.2,
         duration: 0.3,
-        ease: [0.22, 1, 0.36, 1]
-      }
-    })
+        ease: [0.22, 1, 0.36, 1],
+      },
+    }),
   };
 
   const text = "Hi, I'm".split("");
@@ -42,23 +50,23 @@ const Hero = () => {
         </div>
 
         <div className="overflow-hidden">
-          <motion.h2 
+          <motion.h2
             className="text-6xl font-bold flex flex-wrap"
             initial={{ y: 100 }}
             animate={{ y: 0 }}
-            transition={{ 
+            transition={{
               duration: 2,
               ease: [0.22, 1, 0.36, 1],
-              delay: 0.5
+              delay: 0.5,
             }}
           >
             {name.map((letter, i) => (
               <motion.span
                 key={i}
                 className="inline-block hover:text-secondary transition-colors duration-300"
-                whileHover={{ 
+                whileHover={{
                   y: -5,
-                  transition: { duration: 0.2 }
+                  transition: { duration: 0.2 },
                 }}
               >
                 {letter === " " ? "\u00A0" : letter}
@@ -67,7 +75,7 @@ const Hero = () => {
           </motion.h2>
         </div>
 
-        <motion.h3 
+        <motion.h3
           className="text-5xl font-bold text-textSecondary"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -76,18 +84,18 @@ const Hero = () => {
           I build AI-powered solutions.
         </motion.h3>
 
-        <motion.p 
+        <motion.p
           className="max-w-xl text-textSecondary"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 2 }}
         >
-          I&apos;m an Artificial Intelligence Engineer specializing in building exceptional
-          digital experiences. Currently, I&apos;m focused on building AI-powered
-          applications at Sabi AM and TaniAI.
+          I&apos;m an Artificial Intelligence Engineer specializing in building
+          exceptional digital experiences. Currently, I&apos;m focused on
+          building AI-powered applications for businesses.
         </motion.p>
 
-        <motion.div 
+        <motion.div
           className="flex space-x-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,10 +106,10 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary hover:text-secondary/80"
-            whileHover={{ 
+            whileHover={{
               scale: 1.2,
               rotate: [0, -10, 10, -10, 0],
-              transition: { duration: 0.5 }
+              transition: { duration: 0.5 },
             }}
           >
             <FaLinkedin className="w-6 h-6" />
@@ -111,10 +119,10 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary hover:text-secondary/80"
-            whileHover={{ 
+            whileHover={{
               scale: 1.2,
               rotate: [0, -10, 10, -10, 0],
-              transition: { duration: 0.5 }
+              transition: { duration: 0.5 },
             }}
           >
             <FaYoutube className="w-6 h-6" />
@@ -124,10 +132,10 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary hover:text-secondary/80"
-            whileHover={{ 
+            whileHover={{
               scale: 1.2,
               rotate: [0, -10, 10, -10, 0],
-              transition: { duration: 0.5 }
+              transition: { duration: 0.5 },
             }}
           >
             <SiGooglescholar className="w-6 h-6" />
@@ -137,10 +145,10 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary hover:text-secondary/80"
-            whileHover={{ 
+            whileHover={{
               scale: 1.2,
               rotate: [0, -10, 10, -10, 0],
-              transition: { duration: 0.5 }
+              transition: { duration: 0.5 },
             }}
           >
             <FaResearchgate className="w-6 h-6" />
@@ -150,10 +158,10 @@ const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary hover:text-secondary/80"
-            whileHover={{ 
+            whileHover={{
               scale: 1.2,
               rotate: [0, -10, 10, -10, 0],
-              transition: { duration: 0.5 }
+              transition: { duration: 0.5 },
             }}
           >
             <FaGithub className="w-6 h-6" />
@@ -161,9 +169,9 @@ const Hero = () => {
         </motion.div>
 
         <motion.button
-          whileHover={{ 
+          whileHover={{
             scale: 1.05,
-            boxShadow: "0 0 8px #64FFDA"
+            boxShadow: "0 0 8px #64FFDA",
           }}
           whileTap={{ scale: 0.95 }}
           className="mt-8 border border-secondary text-secondary px-6 py-3 rounded hover:bg-secondary/10 transition relative group"
@@ -179,9 +187,29 @@ const Hero = () => {
             transition={{ duration: 0.3 }}
           />
         </motion.button>
+        <motion.button
+          onClick={() => navigate("/cv")}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: "0 0 8px #64FFDA",
+          }}
+          whileTap={{ scale: 0.95 }}
+          className="mt-8 ml-3 border border-secondary text-secondary px-6 py-3 rounded hover:bg-secondary/10 transition relative group cursor-pointer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 4.6 }}
+        >
+          <span className="relative z-10">My CV</span>
+          <motion.div
+            className="absolute inset-0 bg-secondary/20 rounded"
+            initial={{ scale: 0 }}
+            whileHover={{ scale: 1 }}
+            transition={{ duration: 0.3 }}
+          />
+        </motion.button>
       </motion.div>
     </section>
   );
-}
+};
 
-export default Hero; 
+export default Hero;

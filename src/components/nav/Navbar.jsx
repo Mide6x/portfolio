@@ -14,6 +14,7 @@ const Navbar = () => {
     { name: 'About', href: '/#about' },
     { name: 'Skills', href: '/#skills' },
     { name: 'Thoughts', href: '/thoughts' },
+    { name: 'CV', href: '/cv' },
     { name: 'Contact', href: '/#contact' },
   ];
 
@@ -130,4 +131,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
