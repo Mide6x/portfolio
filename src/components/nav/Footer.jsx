@@ -13,7 +13,9 @@ const Footer = ({ variants }) => {
         className="text-center text-textSecondary text-sm mt-20"
       >
         <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-          <p className="md:mr-auto">© Olumide Adewole 2024</p>
+          <p className="md:mr-auto">
+            © Olumide Adewole {new Date().getFullYear()}
+          </p>
           <p className="md:ml-auto">
             Designed & Built with{" "}
             <motion.span
