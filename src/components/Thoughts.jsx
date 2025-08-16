@@ -30,6 +30,15 @@ Imagine an open-source ecosystem where researchers and practitioners can continu
 
 This work represents a fundamental shift from monolithic AI systems to modular, composable intelligence. It's not just about making models bigger or faster—it's about making them smarter about when and how to use their capabilities.`,
     },
+    {
+      id: 3,
+      date: new Date("2025-08-16"),
+      title: "The Duality of Vector Space: Sparse vs. Dense",
+      excerpt: "A deep dive into the fundamental differences between sparse and dense vector representations in machine learning and their implications for recommender systems.",
+      content: `You know those moments when you're explaining something, and suddenly, a topic you thought you understood at a high level clicks into place at a much deeper, almost visceral level? That happened to me recently. I was working on a recommender system, instinctively reaching for all-MiniLM-L6-v2 because, well, that's what we do now. My focus was on a simple heuristic: a larger embedding size must be better, right? More dimensions, more information, better recommendations. The reality is, of course, far more intricate, a balance between semantic fidelity and computational tractability that PhD-level research grapples with every day.
+
+The real intellectual jolt came from a project review where the team used the classic TF-IDF vectorizer. My immediate, somewhat reflexive response was to point them toward modern word and sentence embedding techniques. But simply stating "dense vectors are better" felt intellectually hollow. To truly justify the shift, I had to deconstruct the fundamental difference between sparse and dense vector representations, moving beyond simple definitions to the core mathematical and computational implications.`,
+    },
   ];
 
   return (
