@@ -39,6 +39,13 @@ This work represents a fundamental shift from monolithic AI systems to modular, 
 
 The real intellectual jolt came from a project review where the team used the classic TF-IDF vectorizer. My immediate, somewhat reflexive response was to point them toward modern word and sentence embedding techniques. But simply stating "dense vectors are better" felt intellectually hollow. To truly justify the shift, I had to deconstruct the fundamental difference between sparse and dense vector representations, moving beyond simple definitions to the core mathematical and computational implications.`,
     },
+    {
+      id: 4,
+      date: new Date("2025-01-15"),
+      title: "Optimizing Deep Learning Models for Edge Deployment: A 35x Size Reduction Journey",
+      excerpt: "How I reduced a 90MB Siamese face recognition model to under 5MB while maintaining performance and achieving sub-100ms inference times.",
+      content: `As AI engineers, we often face the challenge of deploying powerful deep learning models on resource-constrained devices. The goal isn't just to make a model work, but to make it work efficiently.`,
+    },
   ];
 
   return (
