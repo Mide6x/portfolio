@@ -34,16 +34,19 @@ This work represents a fundamental shift from monolithic AI systems to modular, 
       id: 3,
       date: new Date("2025-08-16"),
       title: "The Duality of Vector Space: Sparse vs. Dense",
-      excerpt: "A deep dive into the fundamental differences between sparse and dense vector representations in machine learning and their implications for recommender systems.",
+      excerpt:
+        "A deep dive into the fundamental differences between sparse and dense vector representations in machine learning and their implications for recommender systems.",
       content: `You know those moments when you're explaining something, and suddenly, a topic you thought you understood at a high level clicks into place at a much deeper, almost visceral level? That happened to me recently. I was working on a recommender system, instinctively reaching for all-MiniLM-L6-v2 because, well, that's what we do now. My focus was on a simple heuristic: a larger embedding size must be better, right? More dimensions, more information, better recommendations. The reality is, of course, far more intricate, a balance between semantic fidelity and computational tractability that PhD-level research grapples with every day.
 
 The real intellectual jolt came from a project review where the team used the classic TF-IDF vectorizer. My immediate, somewhat reflexive response was to point them toward modern word and sentence embedding techniques. But simply stating "dense vectors are better" felt intellectually hollow. To truly justify the shift, I had to deconstruct the fundamental difference between sparse and dense vector representations, moving beyond simple definitions to the core mathematical and computational implications.`,
     },
     {
       id: 4,
-      date: new Date("2025-01-15"),
-      title: "Optimizing Deep Learning Models for Edge Deployment: A 35x Size Reduction Journey",
-      excerpt: "How I reduced a 90MB Siamese face recognition model to under 5MB while maintaining performance and achieving sub-100ms inference times.",
+      date: new Date("2025-08-16"),
+      title:
+        "Optimizing Deep Learning Models for Edge Deployment: A 35x Size Reduction Journey",
+      excerpt:
+        "How I reduced a 90MB Siamese face recognition model to under 5MB while maintaining performance and achieving sub-100ms inference times.",
       content: `As AI engineers, we often face the challenge of deploying powerful deep learning models on resource-constrained devices. The goal isn't just to make a model work, but to make it work efficiently.`,
     },
   ];
