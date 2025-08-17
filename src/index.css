@@ -14,4 +14,25 @@ body {
   margin: 0;
   background-color: #0A192F;
   font-family: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', system-ui, sans-serif;
-} 
+}
+
+/* Mobile-responsive link and text handling */
+.prose a {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* Ensure long URLs don't break layout on mobile */
+@media (max-width: 640px) {
+  .prose a {
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-all;
+  }
+  
+  .prose p, .prose li {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+}

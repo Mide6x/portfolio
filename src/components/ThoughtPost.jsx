@@ -37,12 +37,12 @@ const ThoughtPost = () => {
             <time className="text-secondary font-mono text-sm">
               {format(thought.date, "MMMM do, yyyy")}
             </time>
-            <h1 className="text-4xl font-bold text-textPrimary">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-textPrimary leading-tight">
               {thought.title}
             </h1>
           </header>
-          <div className="bg-lightNavy/30 p-8 rounded-lg border border-lightNavy/50">
-            <div className="prose prose-lg prose-invert max-w-none">
+          <div className="bg-lightNavy/30 p-4 sm:p-6 lg:p-8 rounded-lg border border-lightNavy/50">
+            <div className="prose prose-sm sm:prose-base lg:prose-lg prose-invert max-w-none break-words">
               {thought.content.split("\n\n").map((paragraph, index) => {
                 // Handle headers (text starting with **)
                 if (paragraph.startsWith("**") && paragraph.includes("**")) {
@@ -63,7 +63,7 @@ const ThoughtPost = () => {
                   return (
                     <ol
                       key={index}
-                      className="list-decimal list-inside space-y-3 my-6 text-textSecondary leading-relaxed"
+                      className="list-decimal list-inside space-y-2 sm:space-y-3 my-4 sm:my-6 text-textSecondary leading-relaxed break-words"
                     >
                       {listItems.map((item, itemIndex) => {
                         const cleanItem = item
@@ -75,7 +75,7 @@ const ThoughtPost = () => {
                         return (
                           <li
                             key={itemIndex}
-                            className="pl-2"
+                            className="pl-1 sm:pl-2 break-words overflow-wrap-anywhere"
                             dangerouslySetInnerHTML={{ __html: cleanItem }}
                           />
                         );
@@ -92,7 +92,7 @@ const ThoughtPost = () => {
                 return (
                   <p
                     key={index}
-                    className="text-textSecondary leading-relaxed mb-6 text-justify"
+                    className="text-textSecondary leading-relaxed mb-4 sm:mb-6 text-left sm:text-justify break-words overflow-wrap-anywhere"
                     dangerouslySetInnerHTML={{ __html: cleanParagraph }}
                   />
                 );
