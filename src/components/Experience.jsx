@@ -11,13 +11,25 @@ const Experience = () => {
 
   const experiences = [
     {
+      title: "Artificial Intelligence and Machine Learning Engineer",
+      company: "Tegence AI",
+      location: "Abuja, Nigeria",
+      period: "January 2025 – Present",
+      responsibilities: [
+        "Lead the AI team, overseeing multiple engineers in the delivery of core AI initiatives",
+        "Spearheading AI projects including recommendation systems and neural translation machines for underrepresented languages",
+        "Developing AI powered chatbot systems with contextual understanding of user enquiries",
+      ],
+    },
+    {
       title: "Artificial Intelligence Engineer",
       company: "Sabi AM",
       location: "Victoria Island, Lagos",
       period: "April 2024 – August 2025",
       responsibilities: [
-        "Designed and implemented AI-powered web applications to automate workflows and deliver insights",
-        "Researched AI integration for existing products, developing proof of concepts using React and React Native",
+        "Reduced manual HR workload by 50% by designing and deploying an automated AI-powered HR system",
+        "Improved product adoption by fine-tuning and integrating custom AI models for smarter user interactions",
+        "Optimized model performance and deployment speed by implementing efficient training pipelines and production-ready APIs",
       ],
     },
     {
@@ -26,8 +38,8 @@ const Experience = () => {
       location: "Asokoro, Abuja",
       period: "December 2022 – October 2023",
       responsibilities: [
-        "Provided technical support and managed IT assets to enhance operational efficiency",
-        "Diagnosed and repaired IT equipment, improving reusability and reducing replacement costs",
+        "Improved operational efficiency by providing timely technical support and managing IT assets",
+        "Reduced hardware replacement costs by diagnosing and repairing IT equipment, increasing lifecycle",
       ],
     },
     {
@@ -36,18 +48,8 @@ const Experience = () => {
       location: "Marina, Lagos",
       period: "July 2022 – October 2022",
       responsibilities: [
-        "Automated data cleaning with Python and Excel, increasing processing efficiency by 20%",
-        "Analyzed asset data and maintained records using Power BI for visualizations",
-      ],
-    },
-    {
-      title: "Front End Developer Intern",
-      company: "Arravo Global Solutions",
-      location: "Ikoyi, Lagos",
-      period: "August 2021 – October 2021",
-      responsibilities: [
-        "Designed Front-End websites and ensured responsiveness",
-        "Periodic user research to enhance user experience",
+        "Increased data processing efficiency by 20% by automating data cleaning workflows using Python",
+        "Enabled clearer decision-making by analyzing asset datasets and building visualizations in Power BI",
       ],
     },
   ];
@@ -86,9 +88,9 @@ const Experience = () => {
         </motion.div>
 
         {/* GitHub Stats */}
-        <motion.div variants={itemVariants} className="space-y-4">
+        {/* <motion.div variants={itemVariants} className="space-y-4">
           <GitHubStats />
-        </motion.div>
+        </motion.div> */}
 
         <div className="space-y-8">
           {experiences.map((exp, index) => (

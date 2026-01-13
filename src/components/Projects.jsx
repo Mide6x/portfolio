@@ -11,64 +11,43 @@ const Projects = () => {
 
   const projects = [
     {
-      title: "SBL Invoice",
-      description: "AI-Powered Invoice Software for Modern Businesses",
+      title: "Landmark AI Agent",
+      description: "A specialized multi-agent orchestrator for hospitality and enterprise automation.",
       details: [
-        "Built a comprehensive invoicing platform with AI integration for business data insights",
-        "Implemented multi-payment gateway support including bank transfers, and Paystack",
-        "Created automated payment reminders and customer interaction functionality",
-        "Developed expense management and real-time financial reporting features",
+        "Architected a specialized agentic system using GPT-4 to dynamically route user intents (Bookings, Complaints, Refunds, Enquiries) to dedicated sub-agents, reducing latency by 35%.",
+        "Engineered a Retrieval-Augmented Generation (RAG) system utilizing vector similarity search (Cosine Similarity) with Supabase (PostgreSQL) and local SQLite fallbacks.",
+        "Developed a high-availability integration with the WhatsApp Business API featuring automated webhook verification and session-persistent state management.",
+        "Implemented a secure transactional reliability flow with third-party gateways for zero-loss booking finalization.",
       ],
-      tech: [
-        "AI Integration",
-        "Payment Processing",
-        "Cloud Platform",
-        "Business Analytics",
-      ],
-      link: "https://invoice.southbytelabs.com/",
+      tech: ["Python", "FastAPI", "GPT-4", "Supabase", "WhatsApp API", "Next.js"],
+      link: "https://ai.landmarkafrica.com/",
       period: "2024 – Present",
-      image: "/sblinvoice.png",
     },
     {
-      title: "NoTypeAI",
-      description:
-        "An Artificial Intelligence Powered Extension That Converts Speech to Text",
+      title: "Veritas AI",
+      description: "Enterprise RAG platform with multi-tenant SaaS architecture.",
       details: [
-        "Built an extension that allows users to speak in input sections of their browser",
-        "Makes form filling on browser up to 70% faster",
-        "Added AI grammar correction ability using GPT-4",
+        "Architected a RAG system using FastAPI and MongoDB Atlas Vector Search, achieving an 83% reduction in query latency through vector index optimization.",
+        "Engineered a high-throughput document processing pipeline using Python and GCS, cutting infrastructure costs by 75%.",
+        "Developed a multi-tenant SaaS architecture supporting organization-scoped RBAC and secure identity management via Firebase.",
+        "Integrated Stripe Billing & Webhook engine, automating the full subscription lifecycle and maintaining real-time resource limits.",
       ],
-      tech: ["Browser Extension", "OpenAI API", "Speech Recognition", "GPT-4"],
-      link: "https://notypeai.com/",
-      period: "Nov 2024 – Present",
-      image: "/notypeai-preview.png",
+      tech: ["Next.js 15", "FastAPI", "MongoDB Vector Search", "Firebase", "Stripe", "GCS"],
+      link: "https://tryveritas.dev/",
+      period: "2024 – 2025",
     },
     {
-      title: "Oúnje x dein",
-      description: "An Artificial Intelligence Powered Recipe Sharing Platform",
+      title: "TaniQR SaaS",
+      description: "AI-Powered identity and smart QR platform for restaurants.",
       details: [
-        "Built a recipe-sharing platform with voice search capabilities",
-        "Developed using the MERN Stack and integrated OpenAI GPT API",
-        "Deployed the backend on Render and frontend on Netlify",
+        "Integrated GPT-4o to transform natural language prompts into complex QR design configurations, reducing design time by 70%.",
+        "Implemented GPT-4 Vision for automated menu digitization, achieving 95%+ accuracy in extracting categories and pricing from photos.",
+        "Developed a scalable microservice architecture in Java/Spring Boot handling redirects with <50ms latency using Redis.",
+        "Architected a responsive Next.js dashboard supporting real-time scan analytics and batch QR generation (1000+ codes/min).",
       ],
-      tech: ["React", "Node.js", "MongoDB", "OpenAI API", "Voice Search"],
-      link: "https://ounje-staging.netlify.app/",
-      period: "Sep 2024 – Oct 2024",
-      image: "/ounje-preview.png",
-    },
-    {
-      title: "SchoolsUK - AI-Powered Student Productivity Platform",
-      description: "Student Productivity Made Simple",
-      details: [
-        "Designed for UK master's students to organize timetables and get class notifications",
-        "Discover university events and explore city spots with curated recommendations",
-        "Connect with classmates to build an academic network",
-        "Upload timetables via PDF or manually and receive email notifications for classes and deadlines",
-      ],
-      tech: ["MERN Stack", "OpenAI API", "Email Notifications", "PDF Upload"],
-      link: "https://schoolsuk.netlify.app/",
-      period: "Feb 2025 - May 2025",
-      image: "/schoolsuk-preview.png",
+      tech: ["Java", "Spring Boot", "Next.js", "GPT-4o", "Redis", "MongoDB"],
+      link: "https://taniqr.com/",
+      period: "2023 – 2024",
     },
   ];
 
@@ -117,18 +96,6 @@ const Projects = () => {
               }}
             >
               <div className="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-
-              {/* Project Image */}
-              <div className="relative h-48 overflow-hidden">
-                {
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-300"
-                  />
-                }
-                <div className="absolute inset-0 bg-primary/50" />
-              </div>
 
               {/* Project Content */}
               <div className="p-6 space-y-4">

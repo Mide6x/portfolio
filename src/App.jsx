@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Cursor from "./components/Cursor";
-import Doodles from "./components/Doodles";
 import GradientOrbs from "./components/GradientOrbs";
 import Navbar from "./components/nav/Navbar";
 import Hero from "./components/Hero";
@@ -14,7 +13,7 @@ import Thoughts from "./components/Thoughts";
 import ThoughtPost from "./components/ThoughtPost";
 import CV from "./components/CV";
 import NotFound from "./components/NotFound";
-import Footer from "./components/nav/Footer"; 
+import Footer from "./components/nav/Footer";
 
 // Create a ScrollToTop component
 const ScrollToTop = () => {
@@ -27,17 +26,6 @@ const ScrollToTop = () => {
   return null;
 };
 
-// Component to conditionally render Doodles
-const ConditionalDoodles = () => {
-  const { pathname } = useLocation();
-  const hideDoodlesRoutes = ['/thoughts/', '/cv'];
-  
-  const shouldHideDoodles = hideDoodlesRoutes.some(route => 
-    pathname.startsWith(route) || pathname === '/thoughts'
-  );
-  
-  return shouldHideDoodles ? null : <Doodles />;
-};
 
 function App() {
   const footerVariants = {
@@ -52,7 +40,6 @@ function App() {
         <Cursor />
         <Navbar />
         <div className="bg-primary/90 backdrop-blur-sm min-h-screen text-textPrimary relative">
-          <ConditionalDoodles />
           <ScrollToTop />
           <Routes>
             <Route
