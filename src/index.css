@@ -2,18 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
+@layer base {
+  body {
+    @apply bg-wixLight text-wixText transition-colors duration-300 antialiased;
+  }
+  .dark body {
+    @apply bg-wixDark text-wixDarkText;
+  }
 }
 
 html {
   scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background-color: #0A192F;
-  font-family: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', system-ui, sans-serif;
 }
 
 /* Mobile-responsive link and text handling */
@@ -23,7 +22,6 @@ body {
   hyphens: auto;
 }
 
-/* Ensure long URLs don't break layout on mobile */
 @media (max-width: 640px) {
   .prose a {
     display: inline-block;

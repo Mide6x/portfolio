@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FaExternalLinkAlt } from "react-icons/fa";
@@ -9,47 +10,25 @@ const Projects = () => {
     threshold: 0.2,
   });
 
-  const projects = [
-    {
-      title: "Landmark AI Agent",
-      description: "A specialized multi-agent orchestrator for hospitality and enterprise automation.",
-      details: [
-        "Architected a specialized agentic system using GPT-4 to dynamically route user intents (Bookings, Complaints, Refunds, Enquiries) to dedicated sub-agents, reducing latency by 35%.",
-        "Engineered a Retrieval-Augmented Generation (RAG) system utilizing vector similarity search (Cosine Similarity) with Supabase (PostgreSQL) and local SQLite fallbacks.",
-        "Developed a high-availability integration with the WhatsApp Business API featuring automated webhook verification and session-persistent state management.",
-        "Implemented a secure transactional reliability flow with third-party gateways for zero-loss booking finalization.",
-      ],
-      tech: ["Python", "FastAPI", "GPT-4", "Supabase", "WhatsApp API", "Next.js"],
-      link: "https://ai.landmarkafrica.com/",
-      period: "2024 – Present",
-    },
-    {
-      title: "Veritas AI",
-      description: "Enterprise RAG platform with multi-tenant SaaS architecture.",
-      details: [
-        "Architected a RAG system using FastAPI and MongoDB Atlas Vector Search, achieving an 83% reduction in query latency through vector index optimization.",
-        "Engineered a high-throughput document processing pipeline using Python and GCS, cutting infrastructure costs by 75%.",
-        "Developed a multi-tenant SaaS architecture supporting organization-scoped RBAC and secure identity management via Firebase.",
-        "Integrated Stripe Billing & Webhook engine, automating the full subscription lifecycle and maintaining real-time resource limits.",
-      ],
-      tech: ["Next.js 15", "FastAPI", "MongoDB Vector Search", "Firebase", "Stripe", "GCS"],
-      link: "https://tryveritas.dev/",
-      period: "2024 – 2025",
-    },
-    {
-      title: "TaniQR SaaS",
-      description: "AI-Powered identity and smart QR platform for restaurants.",
-      details: [
-        "Integrated GPT-4o to transform natural language prompts into complex QR design configurations, reducing design time by 70%.",
-        "Implemented GPT-4 Vision for automated menu digitization, achieving 95%+ accuracy in extracting categories and pricing from photos.",
-        "Developed a scalable microservice architecture in Java/Spring Boot handling redirects with <50ms latency using Redis.",
-        "Architected a responsive Next.js dashboard supporting real-time scan analytics and batch QR generation (1000+ codes/min).",
-      ],
-      tech: ["Java", "Spring Boot", "Next.js", "GPT-4o", "Redis", "MongoDB"],
-      link: "https://taniqr.com/",
-      period: "2023 – 2024",
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/projects`);
+        if (!response.ok) throw new Error('Failed');
+        const data = await response.json();
+        setProjects(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -57,18 +36,18 @@ const Projects = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.15,
-        duration: 1, // Added duration
+        duration: 1,
       },
     },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1 } }, // Added duration
+    visible: { opacity: 1, y: 0, transition: { duration: 1 } },
   };
 
   return (
-    <section id="projects" className="py-20 min-h-screen">
+    <section id="projects" className="py-20 min-h-[80vh]">
       <motion.div
         ref={ref}
         variants={containerVariants}
@@ -76,76 +55,79 @@ const Projects = () => {
         animate={inView ? "visible" : "hidden"}
         className="space-y-12"
       >
-        <motion.div variants={itemVariants} className="flex items-center">
-          <h2 className="text-3xl font-bold text-textPrimary">
-            <span className="text-secondary font-mono text-xl">03.</span>{" "}
-            Projects
+        <motion.div variants={itemVariants} className="flex flex-col">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-wixText dark:text-wixWhite">
+            Selected Projects
           </h2>
-          <div className="h-px bg-lightNavy flex-grow ml-4" />
+          <div className="w-16 h-1 bg-wixAccent mt-6" />
         </motion.div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="group relative bg-lightNavy rounded-lg overflow-hidden"
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 1 }, // Added duration
-              }}
-            >
-              <div className="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+        {loading ? (
+          <div className="grid gap-8 lg:grid-cols-3 md:grid-cols-2">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="animate-pulse bg-wixWhite dark:bg-wixDarkCard h-96 rounded-2xl border border-gray-100 dark:border-gray-800"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-3 md:grid-cols-2">
+            {projects.map((project, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="group flex flex-col justify-between bg-wixWhite dark:bg-wixDarkCard rounded-2xl p-8 shadow-soft dark:shadow-soft-dark transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-800"
+                whileHover={{
+                  y: -5,
+                  transition: { duration: 0.2 },
+                }}
+              >
+                <div>
+                  <div className="flex items-start justify-between mb-6">
 
-              {/* Project Content */}
-              <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-textPrimary group-hover:text-secondary transition-colors">
-                    {project.title}
-                  </h3>
-                  <div className="flex space-x-4 relative z-10">
                     {project.link && (
                       <a
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-textSecondary hover:text-secondary transition-colors p-2"
+                        className="text-wixTextSecondary hover:text-wixAccent dark:text-wixDarkTextSecondary dark:hover:text-wixWhite transition-colors p-2"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <FaExternalLinkAlt className="w-5 h-5" />
+                        <FaExternalLinkAlt size={18} />
                       </a>
                     )}
-                    <div className="p-2">
-                      <SiOpenai className="w-5 h-5 text-textSecondary" />
-                    </div>
                   </div>
+
+                  <h3 className="text-2xl font-bold text-wixText dark:text-wixWhite mb-2">
+                    {project.title}
+                  </h3>
+                  <p className="text-sm font-medium text-wixAccent mb-4">{project.period}</p>
+                  <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-base leading-relaxed mb-6">
+                    {project.description}
+                  </p>
+
+                  <ul className="space-y-3 mb-8">
+                    {project.details && project.details.map((detail, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-wixAccent mt-2 mr-3 flex-shrink-0" />
+                        <span className="text-sm text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                <p className="text-textSecondary">{project.description}</p>
-
-                <ul className="space-y-2">
-                  {project.details.map((detail, idx) => (
-                    <li key={idx} className="flex items-start space-x-2">
-                      <span className="text-secondary mt-1">▹</span>
-                      <span className="text-textSecondary">{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-wrap gap-2 pt-4">
-                  {project.tech.map((tech, idx) => (
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-gray-800">
+                  {project.tech && project.tech.map((techItem, idx) => (
                     <span
                       key={idx}
-                      className="text-secondary text-sm font-mono px-2 py-1 bg-secondary/10 rounded"
+                      className="text-xs font-semibold px-3 py-1 bg-wixLight dark:bg-gray-800 text-wixText dark:text-wixDarkText rounded-full"
                     >
-                      {tech}
+                      {techItem}
                     </span>
                   ))}
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.div>
     </section>
   );

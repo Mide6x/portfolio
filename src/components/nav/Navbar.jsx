@@ -1,12 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaSun, FaMoon, FaSignOutAlt } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Dark Mode State
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    if (!isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   const navItems = [
     { name: 'Experience', href: '/#experience' },
@@ -31,7 +58,6 @@ const Navbar = () => {
       const sectionId = href.split('#')[1];
       if (location.pathname !== '/') {
         navigate('/');
-        // Wait for navigation to complete before scrolling
         setTimeout(() => {
           scrollToSection(sectionId);
         }, 100);
@@ -44,27 +70,88 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isAdminAuthenticated = localStorage.getItem('adminToken') !== null;
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('adminToken');
+    window.location.reload();
+  };
+
+  // ----------------------------------------------------
+  // ADMIN NAVBAR
+  // ----------------------------------------------------
+  if (isAdminRoute) {
+    return (
+      <nav className="fixed w-full bg-wixWhite/80 dark:bg-wixDark/80 backdrop-blur-md z-[100] border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-wixText dark:text-wixWhite font-bold text-2xl tracking-tighter cursor-pointer"
+              onClick={() => navigate('/')}
+            >
+              Dashboard
+            </motion.div>
+            
+            <div className="flex items-center gap-6">
+              <button
+                onClick={toggleTheme}
+                className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite focus:outline-none transition-colors"
+                aria-label="Toggle Dark Mode"
+              >
+                {isDarkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
+              </button>
+
+              {isAdminAuthenticated ? (
+                <button 
+                  onClick={handleAdminLogout}
+                  className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-400 transition-colors"
+                >
+                  <FaSignOutAlt />
+                  <span>Sign Out</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => navigate('/')}
+                  className="text-sm font-bold text-wixTextSecondary hover:text-wixText dark:text-wixDarkTextSecondary dark:hover:text-wixWhite transition-colors"
+                >
+                  Return to Site
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // ----------------------------------------------------
+  // NORMAL NAVBAR
+  // ----------------------------------------------------
   return (
-    <nav className="fixed w-full bg-primary/90 backdrop-blur-sm z-[100]">
+    <nav className="fixed w-full bg-wixWhite/80 dark:bg-wixDark/80 backdrop-blur-md z-[100] border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-secondary font-mono text-xl cursor-pointer"
-            onClick={() => navigate('/')}
-            whileHover={{ 
-              scale: 1.1,
-              rotate: [0, -5, 5, -5, 0],
-              transition: { duration: 0.8 }
-            }}
-          >
-            OA
-          </motion.div>
+          <div className="flex items-center gap-10">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-wixText dark:text-wixWhite font-bold text-2xl tracking-tighter cursor-pointer"
+              onClick={() => navigate('/')}
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2 }
+              }}
+            >
+              Olumide.
+            </motion.div>
+          </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          <div className="hidden md:flex items-center gap-8">
+            <div className="flex items-baseline space-x-6">
               {navItems.map((item, i) => (
                 <motion.a
                   key={item.name}
@@ -73,18 +160,16 @@ const Navbar = () => {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 + 0.3 }}
-                  className={`text-textSecondary hover:text-secondary px-3 py-2 font-mono text-sm relative group cursor-pointer ${
+                  className={`text-sm font-medium transition-colors duration-200 relative group cursor-pointer ${
                     (location.pathname === item.href || 
                      (location.pathname === '/' && item.href.includes(location.hash)))
-                      ? 'text-secondary'
-                      : ''
+                      ? 'text-wixAccent dark:text-wixWhite'
+                      : 'text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite'
                   }`}
-                  whileHover={{ y: -2 }}
                 >
-                  <span className="text-secondary">{`0${i + 1}.`}</span>
-                  <span className="ml-2">{item.name}</span>
+                  <span>{item.name}</span>
                   <motion.span
-                    className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary"
+                    className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-wixAccent dark:bg-wixWhite"
                     initial={{ width: "0%" }}
                     whileHover={{ width: "100%" }}
                     transition={{ duration: 0.3 }}
@@ -92,13 +177,31 @@ const Navbar = () => {
                 </motion.a>
               ))}
             </div>
+
+            {/* Dark Mode Toggle */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              onClick={toggleTheme}
+              className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite p-2 rounded-full focus:outline-none transition-colors"
+              aria-label="Toggle Dark Mode"
+            >
+              {isDarkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
+            </motion.button>
           </div>
 
-          {/* Mobile Menu */}
-          <div className="md:hidden">
+          {/* Mobile Menu Actions */}
+          <div className="md:hidden flex items-center gap-4">
+            <button
+              onClick={toggleTheme}
+              className="text-wixTextSecondary dark:text-wixDarkTextSecondary p-2 focus:outline-none"
+            >
+              {isDarkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
+            </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-secondary hover:text-secondary/80"
+              className="text-wixText dark:text-wixWhite hover:opacity-80"
             >
               {isOpen ? <FaTimes className="h-6 w-6" /> : <FaBars className="h-6 w-6" />}
             </button>
@@ -106,19 +209,19 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="md:hidden bg-wixWhite dark:bg-wixDark border-b border-gray-200 dark:border-gray-800"
         >
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-4 pt-2 pb-6 space-y-2 shadow-soft dark:shadow-soft-dark">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-textSecondary hover:text-secondary block px-3 py-2 font-mono text-base"
+                className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixWhite block px-3 py-3 rounded-md font-medium text-base transition-colors"
                 onClick={(e) => handleClick(e, item.href)}
               >
                 {item.name}

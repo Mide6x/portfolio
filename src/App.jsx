@@ -14,6 +14,7 @@ import ThoughtPost from "./components/ThoughtPost";
 import CV from "./components/CV";
 import NotFound from "./components/NotFound";
 import Footer from "./components/nav/Footer";
+import AdminPanel from "./components/AdminPanel";
 
 // Create a ScrollToTop component
 const ScrollToTop = () => {
@@ -36,17 +37,16 @@ function App() {
   return (
     <BrowserRouter>
       <div className="relative min-h-screen">
-        <GradientOrbs />
         <Cursor />
         <Navbar />
-        <div className="bg-primary/90 backdrop-blur-sm min-h-screen text-textPrimary relative">
+        <div className="relative z-10 w-full min-h-screen">
           <ScrollToTop />
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
                     <Hero />
                     <Experience />
                     <Projects />
@@ -61,6 +61,7 @@ function App() {
             <Route path="/thoughts" element={<><Thoughts /><Footer variants={footerVariants} /></>} />
             <Route path="/thoughts/:id" element={<><ThoughtPost /><Footer variants={footerVariants} /></>} />
             <Route path="/cv" element={<><CV /><Footer variants={footerVariants} /></>} />
+            <Route path="/admin" element={<><AdminPanel /></>} />
             <Route path="*" element={<><NotFound /><Footer variants={footerVariants} /></>} />
           </Routes>
         </div>

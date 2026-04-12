@@ -1,7 +1,7 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FaBriefcase } from "react-icons/fa";
-import GitHubStats from "./GitHubStats";
 
 const Experience = () => {
   const [ref, inView] = useInView({
@@ -9,50 +9,25 @@ const Experience = () => {
     threshold: 0.2,
   });
 
-  const experiences = [
-    {
-      title: "Artificial Intelligence and Machine Learning Engineer",
-      company: "Tegence AI",
-      location: "Abuja, Nigeria",
-      period: "January 2025 – Present",
-      responsibilities: [
-        "Lead the AI team, overseeing multiple engineers in the delivery of core AI initiatives",
-        "Spearheading AI projects including recommendation systems and neural translation machines for underrepresented languages",
-        "Developing AI powered chatbot systems with contextual understanding of user enquiries",
-      ],
-    },
-    {
-      title: "Artificial Intelligence Engineer",
-      company: "Sabi AM",
-      location: "Victoria Island, Lagos",
-      period: "April 2024 – August 2025",
-      responsibilities: [
-        "Reduced manual HR workload by 50% by designing and deploying an automated AI-powered HR system",
-        "Improved product adoption by fine-tuning and integrating custom AI models for smarter user interactions",
-        "Optimized model performance and deployment speed by implementing efficient training pipelines and production-ready APIs",
-      ],
-    },
-    {
-      title: "IT Support Staff",
-      company: "Maryland Global Initiatives Corporation",
-      location: "Asokoro, Abuja",
-      period: "December 2022 – October 2023",
-      responsibilities: [
-        "Improved operational efficiency by providing timely technical support and managing IT assets",
-        "Reduced hardware replacement costs by diagnosing and repairing IT equipment, increasing lifecycle",
-      ],
-    },
-    {
-      title: "Software Engineering Intern",
-      company: "Sterling Bank",
-      location: "Marina, Lagos",
-      period: "July 2022 – October 2022",
-      responsibilities: [
-        "Increased data processing efficiency by 20% by automating data cleaning workflows using Python",
-        "Enabled clearer decision-making by analyzing asset datasets and building visualizations in Power BI",
-      ],
-    },
-  ];
+  const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
+
+  useEffect(() => {
+    const fetchExp = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/experience`);
+        if (!response.ok) throw new Error('Failed');
+        const data = await response.json();
+        setExperiences(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExp();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -71,76 +46,78 @@ const Experience = () => {
   };
 
   return (
-    <section id="experience" className="py-20 min-h-screen">
+    <section id="experience" className="py-20 min-h-[80vh]">
       <motion.div
         ref={ref}
         variants={containerVariants}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
-        className="space-y-12"
+        className="space-y-16"
       >
-        <motion.div variants={itemVariants} className="flex items-center">
-          <h2 className="text-3xl font-bold text-textPrimary">
-            <span className="text-secondary font-mono text-xl">01.</span>{" "}
-            Experience
+        <motion.div variants={itemVariants} className="flex flex-col">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-wixText dark:text-wixWhite">
+            Work Experience
           </h2>
-          <div className="h-px bg-lightNavy flex-grow ml-4" />
+          <div className="w-16 h-1 bg-wixAccent mt-6" />
         </motion.div>
 
-        {/* GitHub Stats */}
-        {/* <motion.div variants={itemVariants} className="space-y-4">
-          <GitHubStats />
-        </motion.div> */}
+        {loading ? (
+          <div className="space-y-6">
+            {[1, 2].map(i => (
+              <div key={i} className="animate-pulse bg-wixWhite dark:bg-wixDarkCard h-32 rounded-2xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {experiences.map((exp, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="relative pl-8 md:pl-0"
+              >
+                <div className="md:grid md:grid-cols-[250px_1fr] md:gap-8 lg:gap-12">
+                  {/* Timeline line */}
+                  <div className="hidden md:block absolute left-[250px] top-0 bottom-[-48px] w-px bg-gray-200 dark:bg-gray-800" />
 
-        <div className="space-y-8">
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="relative pl-8 md:pl-0"
-            >
-              <div className="md:grid md:grid-cols-[200px_1fr] md:gap-6">
-                {/* Timeline line */}
-                <div className="hidden md:block absolute left-[200px] top-0 bottom-0 w-px bg-lightNavy" />
+                  {/* Timeline dot */}
+                  <div className="hidden md:block absolute left-[246px] top-2 w-2.5 h-2.5 rounded-full bg-wixAccent dark:bg-wixWhite shadow-sm" />
 
-                {/* Timeline dot */}
-                <div className="hidden md:block absolute left-[196px] top-2 w-[10px] h-[10px] rounded-full bg-secondary" />
+                  {/* Mobile timeline line */}
+                  <div className="md:hidden absolute left-0 top-0 bottom-[-48px] w-px bg-gray-200 dark:bg-gray-800" />
 
-                {/* Mobile timeline line */}
-                <div className="md:hidden absolute left-0 top-0 bottom-0 w-px bg-lightNavy" />
+                  {/* Mobile timeline dot */}
+                  <div className="md:hidden absolute left-[-4px] top-2 w-2 h-2 rounded-full bg-wixAccent dark:bg-wixWhite" />
 
-                {/* Mobile timeline dot */}
-                <div className="md:hidden absolute left-[-4px] top-2 w-[8px] h-[8px] rounded-full bg-secondary" />
-
-                <div className="text-textSecondary font-mono text-sm">
-                  {exp.period}
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-xl text-textPrimary font-semibold">
-                      {exp.title}
-                    </h3>
-                    <div className="flex items-center space-x-2 text-secondary">
-                      <FaBriefcase className="w-4 h-4" />
-                      <span>{exp.company}</span>
-                    </div>
-                    <p className="text-textSecondary text-sm">{exp.location}</p>
+                  <div className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-medium text-sm md:text-base mb-4 md:mb-0 md:text-right pr-6 md:pr-12 pt-1">
+                    {exp.period}
                   </div>
 
-                  <ul className="space-y-2">
-                    {exp.responsibilities.map((resp, idx) => (
-                      <li key={idx} className="flex items-start space-x-2">
-                        <span className="text-secondary mt-1">▹</span>
-                        <span className="text-textSecondary">{resp}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="space-y-4 bg-wixWhite dark:bg-wixDarkCard p-6 rounded-2xl shadow-soft dark:shadow-soft-dark border border-gray-50 dark:border-gray-800 md:ml-4">
+                    <div>
+                      <h3 className="text-xl md:text-2xl text-wixText dark:text-wixWhite font-bold mb-1">
+                        {exp.title}
+                      </h3>
+                      <div className="flex items-center space-x-2 text-wixAccent font-medium text-sm md:text-base">
+                        <FaBriefcase className="w-4 h-4" />
+                        <span>{exp.company}</span>
+                      </div>
+                      <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-sm mt-1">{exp.location}</p>
+                    </div>
+
+                    <ul className="space-y-3 pt-2">
+                      {exp.responsibilities && exp.responsibilities.map((resp, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-600 mt-2 mr-3 flex-shrink-0" />
+                          <span className="text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed">{resp}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.div>
     </section>
   );

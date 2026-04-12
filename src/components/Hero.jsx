@@ -75,24 +75,13 @@ const Hero = () => {
           </motion.h2>
         </div>
 
-        <motion.h3
-          className="text-5xl font-bold text-textSecondary"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 1.5 }}
-        >
-          I build AI-powered solutions.
-        </motion.h3>
-
         <motion.p
           className="max-w-xl text-textSecondary"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 2 }}
         >
-          I&apos;m an Artificial Intelligence Engineer specializing in building
-          exceptional digital experiences. Currently, I&apos;m focused on
-          building AI-powered applications for businesses.
+          I&apos;m an Artificial Intelligence Engineer and MBA student with a growing research interest in AI, risk, governance, and how organisations adopt intelligent systems for fraud detection and operational risk management.
         </motion.p>
 
         <motion.div

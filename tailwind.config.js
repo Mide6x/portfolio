@@ -1,21 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,jsx}"],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: "#0A192F",
-        secondary: "#64FFDA",
-        textPrimary: "#CCD6F6",
-        textSecondary: "#8892B0",
-        navy: "#0a192f",
-        lightNavy: "#112240",
-        lightestNavy: "#233554",
+        wixLight: '#FAFAFA',
+        wixWhite: '#FFFFFF',
+        wixText: '#161616',
+        wixTextSecondary: '#6b7280',
+        wixAccent: '#0A58CA',
+        
+        wixDark: '#0f1011',
+        wixDarkCard: '#1a1b1d',
+        wixDarkText: '#f3f4f6',
+        wixDarkTextSecondary: '#9ca3af',
       },
       fontFamily: {
-        sans: ["Calibre", "Inter", "San Francisco", "SF Pro Text", "system-ui"],
+        sans: ["'Plus Jakarta Sans'", "Inter", "system-ui", "sans-serif"],
         mono: ["SF Mono", "Fira Code", "monospace"],
       },
+      boxShadow: {
+        'soft': '0 4px 20px 0 rgba(0, 0, 0, 0.03)',
+        'soft-dark': '0 4px 20px 0 rgba(0, 0, 0, 0.4)',
+      }
     },
   },
   plugins: [],
