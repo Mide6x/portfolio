@@ -163,7 +163,7 @@ const Navbar = () => {
                   className={`text-sm font-medium transition-colors duration-200 relative group cursor-pointer ${
                     (location.pathname === item.href || 
                      (location.pathname === '/' && item.href.includes(location.hash)))
-                      ? 'text-wixAccent dark:text-wixWhite'
+                      ? 'text-wixText dark:text-wixWhite font-bold'
                       : 'text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite'
                   }`}
                 >
@@ -221,7 +221,12 @@ const Navbar = () => {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixWhite block px-3 py-3 rounded-md font-medium text-base transition-colors"
+                className={`block px-3 py-3 rounded-md font-medium text-base transition-colors ${
+                  (location.pathname === item.href || 
+                   (location.pathname === '/' && item.href.includes(location.hash)))
+                    ? 'text-wixText dark:text-wixWhite font-bold bg-gray-50 dark:bg-gray-800'
+                    : 'text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite hover:bg-gray-50 dark:hover:bg-gray-800'
+                }`}
                 onClick={(e) => handleClick(e, item.href)}
               >
                 {item.name}

@@ -76,7 +76,7 @@ const Hero = () => {
         </div>
 
         <motion.p
-          className="max-w-xl text-textSecondary"
+          className="max-w-xl text-textSecondary text-base sm:text-lg leading-relaxed"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 2 }}
@@ -85,7 +85,7 @@ const Hero = () => {
         </motion.p>
 
         <motion.div
-          className="flex space-x-6"
+          className="flex flex-wrap gap-4 sm:gap-6 pt-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 2.3 }}
@@ -157,45 +157,41 @@ const Hero = () => {
           </motion.a>
         </motion.div>
 
-        <motion.button
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0 0 8px #64FFDA",
-          }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-8 border border-secondary text-secondary px-6 py-3 rounded hover:bg-secondary/10 transition relative group"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 4.6 }}
+        <motion.div
+           className="mt-8 flex flex-col sm:flex-row gap-4"
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           transition={{ delay: 4.6 }}
         >
-          <span className="relative z-10">Check out my work</span>
-          <motion.div
-            className="absolute inset-0 bg-secondary/20 rounded"
-            initial={{ scale: 0 }}
-            whileHover={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-          />
-        </motion.button>
-        <motion.button
-          onClick={() => navigate("/cv")}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: "0 0 8px #64FFDA",
-          }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-8 ml-3 border border-secondary text-secondary px-6 py-3 rounded hover:bg-secondary/10 transition relative group cursor-pointer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 4.6 }}
-        >
-          <span className="relative z-10">My CV</span>
-          <motion.div
-            className="absolute inset-0 bg-secondary/20 rounded"
-            initial={{ scale: 0 }}
-            whileHover={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-          />
-        </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: "0 0 8px #64FFDA" }}
+            whileTap={{ scale: 0.95 }}
+            className="border border-secondary text-secondary px-6 py-3 rounded hover:bg-secondary/10 transition relative group w-full sm:w-auto overflow-hidden"
+          >
+            <span className="relative z-10 font-medium">Check out my work</span>
+            <motion.div
+              className="absolute inset-0 bg-secondary/20 rounded"
+              initial={{ scale: 0 }}
+              whileHover={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+          </motion.button>
+
+          <motion.button
+            onClick={() => navigate("/cv")}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 8px #64FFDA" }}
+            whileTap={{ scale: 0.95 }}
+            className="border border-secondary text-secondary px-6 py-3 rounded hover:bg-secondary/10 transition relative group cursor-pointer w-full sm:w-auto overflow-hidden"
+          >
+            <span className="relative z-10 font-medium">My CV</span>
+            <motion.div
+              className="absolute inset-0 bg-secondary/20 rounded"
+              initial={{ scale: 0 }}
+              whileHover={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+          </motion.button>
+        </motion.div>
       </motion.div>
     </section>
   );

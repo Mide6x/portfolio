@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaLock, FaUpload, FaPlus, FaBriefcase, FaBook, FaFolderPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { supabase } from '../supabaseClient';
 
 const AdminPanel = () => {
   const [session, setSession] = useState(null);
@@ -90,24 +91,28 @@ const AdminPanel = () => {
     setIsLoadingItems(false);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const VALID_PASS = import.meta.env.VITE_ADMIN_PASSWORD;
-    if (!VALID_PASS) {
-      alert('Missing VITE_ADMIN_PASSWORD (do not use this in production).');
+    if (!email || !password) {
+      alert('Please enter your email and password.');
       return;
     }
     
-    if (email !== 'adewoleolumide05@gmail.com') {
-      alert('Error');
+    // Trade the raw credentials directly with Supabase securely for a JWT
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      alert(`Authentication Failed: ${error.message}`);
       return;
     }
-    
-    if (password === VALID_PASS) {
-      setSession({ access_token: password });
+
+    // Now your front-end natively possesses a cryptographically backed JWT token!
+    if (data?.session?.access_token) {
+      setSession({ access_token: data.session.access_token });
       window.dispatchEvent(new Event("storage"));
-    } else {
-      alert('Invalid Credentials');
     }
   };
 
