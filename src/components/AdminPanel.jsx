@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaLock, FaUpload, FaPlus, FaBriefcase, FaBook, FaFolderPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaUpload, FaPlus, FaBriefcase, FaBook, FaFolderPlus, FaChevronLeft, FaChevronRight, FaEye, FaEyeSlash } from "react-icons/fa";
 import { supabase } from '../supabaseClient';
 
 const AdminPanel = () => {
   const [session, setSession] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState('');
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
 
   const [activeForm, setActiveForm] = useState(null);
@@ -93,8 +95,9 @@ const AdminPanel = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setAuthError('');
     if (!email || !password) {
-      alert('Please enter your email and password.');
+      setAuthError('Please enter your email and password.');
       return;
     }
     
@@ -105,7 +108,7 @@ const AdminPanel = () => {
     });
 
     if (error) {
-      alert(`Authentication Failed: ${error.message}`);
+      setAuthError(error.message);
       return;
     }
 
@@ -348,21 +351,30 @@ const AdminPanel = () => {
           className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark max-w-md w-full border border-gray-100 dark:border-gray-800"
         >
           <div className="flex flex-col items-center mb-8">
-             <div className="w-16 h-16 bg-wixLight dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-              <FaLock className="text-wixAccent text-2xl" />
-            </div>
             <h2 className="text-2xl font-bold text-wixText dark:text-wixWhite">Admin Portal</h2>
             <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-sm mt-2 font-medium">Secure Access Node</p>
           </div>
           
           <form onSubmit={handleLogin} className="space-y-4">
+            <AnimatePresence>
+              {authError && (
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="p-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/50 rounded-xl text-red-600 dark:text-red-400 text-sm font-semibold text-center mb-2">
+                  {authError}
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div>
               <label className="block text-sm font-medium text-wixText dark:text-wixWhite mb-1">Email</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="Your email here" required />
             </div>
             <div>
               <label className="block text-sm font-medium text-wixText dark:text-wixWhite mb-1">Secure Passkey</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="••••••••" required />
+              <div className="relative">
+                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 pr-12 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="••••••••" required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-wixTextSecondary hover:text-wixText dark:hover:text-wixWhite transition-colors">
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
             <button type="submit" className="w-full bg-wixAccent text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition duration-300 mt-4 shadow-sm">Authenticate</button>
           </form>
