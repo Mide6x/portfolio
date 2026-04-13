@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FaArrowLeft, FaPrint, FaLinkedin, FaGithub, FaGlobe, FaGraduationCap, FaBriefcase, FaBook, FaExternalLinkAlt } from "react-icons/fa";
@@ -41,7 +42,11 @@ const CV = () => {
   };
 
   return (
-    <section className="min-h-screen py-24 bg-wixLight dark:bg-wixDark text-wixText dark:text-wixDarkText">
+    <section className="min-h-screen py-24 bg-wixLight dark:bg-wixDark text-wixText dark:text-wixDark">
+      <Helmet>
+        <title>Curriculum Vitae | Olumide Adewole</title>
+        <meta name="description" content="View the professional experience, projects, and education of Olumide Adewole, an AI Engineer and Full-Stack Developer." />
+      </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

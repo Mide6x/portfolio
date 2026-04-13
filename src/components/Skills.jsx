@@ -1,21 +1,28 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { 
+  SiTensorflow, 
+  SiOpenai,
+  SiMongodb,
+  SiExpress,
+  SiNodedotjs,
+  SiGooglecloud
+} from 'react-icons/si';
+import { 
+  TbBrandReactNative
+} from 'react-icons/tb';
+import { 
   FaPython, 
   FaJs, 
   FaReact, 
   FaGitAlt,
   FaPhp,
   FaDatabase,
-  FaAws
+  FaAws,
+  FaTerminal,
+  FaGlobe,
+  FaServer
 } from 'react-icons/fa';
-import { 
-  SiTensorflow, 
-  SiOpenai,
-  SiMongodb,
-  SiExpress,
-  SiNodedotjs
-} from 'react-icons/si';
 
 const Skills = () => {
   const [ref, inView] = useInView({
@@ -33,9 +40,10 @@ const Skills = () => {
       ]
     },
     {
-      title: 'Web Development',
+      title: 'Web & Mobile Dev',
       skills: [
         { name: 'React', icon: <FaReact className="w-6 h-6" /> },
+        { name: 'React Native', icon: <TbBrandReactNative className="w-6 h-6" /> },
         { name: 'Node.js', icon: <SiNodedotjs className="w-6 h-6" /> },
         { name: 'Express', icon: <SiExpress className="w-6 h-6" /> },
         { name: 'MongoDB', icon: <SiMongodb className="w-6 h-6" /> }
@@ -46,6 +54,15 @@ const Skills = () => {
       skills: [
         { name: 'TensorFlow', icon: <SiTensorflow className="w-6 h-6" /> },
         { name: 'OpenAI API', icon: <SiOpenai className="w-6 h-6" /> }
+      ]
+    },
+    {
+      title: 'Cloud & DevOps',
+      skills: [
+        { name: 'GCP', icon: <SiGooglecloud className="w-6 h-6" /> },
+        { name: 'Coolify VPS', icon: <FaServer className="w-6 h-6" /> },
+        { name: 'DNS & Infrastructure', icon: <FaGlobe className="w-6 h-6" /> },
+        { name: 'DevOps / CI/CD', icon: <FaTerminal className="w-6 h-6" /> }
       ]
     },
     {

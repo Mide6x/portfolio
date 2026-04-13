@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import Cursor from "./components/Cursor";
 import GradientOrbs from "./components/GradientOrbs";
 import Navbar from "./components/nav/Navbar";
@@ -37,6 +38,10 @@ function App() {
   return (
     <BrowserRouter>
       <div className="relative min-h-screen">
+        <Helmet>
+          <title>Olumide Adewole | AI Engineer</title>
+          <meta name="description" content="Portfolio of Olumide Adewole, an AI Engineer specializing in ML and modern web apps." />
+        </Helmet>
         <Cursor />
         <Navbar />
         <div className="relative z-10 w-full min-h-screen">

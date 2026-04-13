@@ -143,7 +143,7 @@ const Hero = () => {
             <FaResearchgate className="w-6 h-6" />
           </motion.a>
           <motion.a
-            href="https://github.com/OlumideAdewole"
+            href="https://github.com/mide6x"
             target="_blank"
             rel="noopener noreferrer"
             className="text-secondary hover:text-secondary/80"
@@ -158,10 +158,10 @@ const Hero = () => {
         </motion.div>
 
         <motion.div
-           className="mt-8 flex flex-col sm:flex-row gap-4"
-           initial={{ opacity: 0 }}
-           animate={{ opacity: 1 }}
-           transition={{ delay: 4.6 }}
+          className="mt-8 flex flex-col sm:flex-row gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 4.6 }}
         >
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: "0 0 8px #64FFDA" }}

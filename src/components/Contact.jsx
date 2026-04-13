@@ -38,7 +38,7 @@ const Contact = () => {
     {
       icon: <FaGithub className="w-6 h-6" />,
       text: "GitHub",
-      link: "https://github.com/OlumideAdewole",
+      link: "https://github.com/mide6x",
       category: "Professional",
     },
     {

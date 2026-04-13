@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -109,6 +110,12 @@ const ThoughtPost = () => {
 
   return (
     <section className="py-24 min-h-screen bg-wixLight dark:bg-wixDark transition-colors">
+      <Helmet>
+        <title>{thought.title} | Olumide Adewole</title>
+        <meta name="description" content={thought.content.substring(0, 160) + "..."} />
+        <meta property="og:title" content={`${thought.title} | Olumide Adewole`} />
+        <meta property="og:description" content={thought.content.substring(0, 160) + "..."} />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           

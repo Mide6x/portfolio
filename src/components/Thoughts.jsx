@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -28,6 +29,10 @@ const Thoughts = () => {
 
   return (
     <section className="py-20 min-h-screen bg-wixLight dark:bg-wixDark transition-colors">
+      <Helmet>
+        <title>Technical Thoughts | Olumide Adewole</title>
+        <meta name="description" content="Technical insights, tutorials, and reflections on AI engineering, LLMs, and modern software development." />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-wixText dark:text-wixWhite mb-12 tracking-tight">Thoughts</h1>
         
