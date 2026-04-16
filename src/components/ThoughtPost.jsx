@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
 import { FaArrowLeft } from "react-icons/fa";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const isSafeHref = (href) => {
   try {
@@ -69,6 +70,7 @@ const renderInline = (text) => {
 
 const ThoughtPost = () => {
   const { id } = useParams();
+  const reduceMotion = usePrefersReducedMotion();
   const [thought, setThought] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -117,7 +119,11 @@ const ThoughtPost = () => {
         <meta property="og:description" content={thought.content.substring(0, 160) + "..."} />
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        <motion.article
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.5 }}
+        >
           
           <Link
             to="/thoughts"

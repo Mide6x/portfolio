@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import usePrefersReducedMotion, { useIsTouchDevice } from "./hooks/usePrefersReducedMotion";
 import Cursor from "./components/Cursor";
 import GradientOrbs from "./components/GradientOrbs";
 import Navbar from "./components/nav/Navbar";
@@ -30,10 +31,16 @@ const ScrollToTop = () => {
 
 
 function App() {
+  const reduceMotion = usePrefersReducedMotion();
+  const isTouch = useIsTouchDevice();
+
   const footerVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.4 } }
   };
+
+  // Skip decorative effects on slow connections or touch devices
+  const showDecorations = !reduceMotion && !isTouch;
 
   return (
     <BrowserRouter>
@@ -42,7 +49,7 @@ function App() {
           <title>Olumide Adewole | AI Engineer</title>
           <meta name="description" content="Portfolio of Olumide Adewole, an AI Engineer specializing in ML and modern web apps." />
         </Helmet>
-        <Cursor />
+        {showDecorations && <Cursor />}
         <Navbar />
         <div className="relative z-10 w-full min-h-screen">
           <ScrollToTop />

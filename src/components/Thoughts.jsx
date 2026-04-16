@@ -3,8 +3,10 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Thoughts = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [thoughts, setThoughts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -58,9 +60,9 @@ const Thoughts = () => {
               thoughts.map((thought) => (
                 <motion.article
                   key={thought.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.5 }}
                   className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800 group hover:border-wixAccent dark:hover:border-wixAccent transition-all"
                 >
                   <Link to={`/thoughts/${thought.id}`} className="block space-y-3">

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FaBriefcase } from "react-icons/fa";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Experience = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -34,24 +36,26 @@ const Experience = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        duration: 1,
+        staggerChildren: reduceMotion ? 0 : 0.15,
+        duration: reduceMotion ? 0 : 1,
       },
     },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0, transition: { duration: 1 } },
+    visible: { opacity: 1, x: 0, transition: { duration: reduceMotion ? 0 : 1 } },
   };
+
+  const shouldAnimate = reduceMotion || inView;
 
   return (
     <section id="experience" className="py-20 min-h-[80vh]">
       <motion.div
         ref={ref}
         variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        initial={reduceMotion ? "visible" : "hidden"}
+        animate={shouldAnimate ? "visible" : "hidden"}
         className="space-y-16"
       >
         <motion.div variants={itemVariants} className="flex flex-col">

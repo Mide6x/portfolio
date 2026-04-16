@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaBars, FaTimes, FaSun, FaMoon, FaSignOutAlt } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const reduceMotion = usePrefersReducedMotion();
 
   // Dark Mode State
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -87,7 +89,7 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={reduceMotion ? false : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="text-wixText dark:text-wixWhite font-bold text-2xl tracking-tighter cursor-pointer"
               onClick={() => navigate('/')}
@@ -136,11 +138,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-10">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
+              initial={reduceMotion ? false : { opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="text-wixText dark:text-wixWhite font-bold text-2xl tracking-tighter cursor-pointer"
               onClick={() => navigate('/')}
-              whileHover={{ 
+              whileHover={reduceMotion ? undefined : { 
                 scale: 1.05,
                 transition: { duration: 0.2 }
               }}
@@ -157,9 +159,9 @@ const Navbar = () => {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => handleClick(e, item.href)}
-                  initial={{ opacity: 0, y: -20 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 + 0.3 }}
+                  transition={reduceMotion ? undefined : { delay: i * 0.05 + 0.3 }}
                   className={`text-sm font-medium transition-colors duration-200 relative group cursor-pointer ${
                     (location.pathname === item.href || 
                      (location.pathname === '/' && item.href.includes(location.hash)))
@@ -168,21 +170,23 @@ const Navbar = () => {
                   }`}
                 >
                   <span>{item.name}</span>
-                  <motion.span
-                    className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-wixAccent dark:bg-wixWhite"
-                    initial={{ width: "0%" }}
-                    whileHover={{ width: "100%" }}
-                    transition={{ duration: 0.3 }}
-                  />
+                  {!reduceMotion && (
+                    <motion.span
+                      className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-wixAccent dark:bg-wixWhite"
+                      initial={{ width: "0%" }}
+                      whileHover={{ width: "100%" }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  )}
                 </motion.a>
               ))}
             </div>
 
             {/* Dark Mode Toggle */}
             <motion.button
-              initial={{ opacity: 0 }}
+              initial={reduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={reduceMotion ? undefined : { delay: 0.5 }}
               onClick={toggleTheme}
               className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite p-2 rounded-full focus:outline-none transition-colors"
               aria-label="Toggle Dark Mode"
@@ -212,7 +216,7 @@ const Navbar = () => {
       {/* Mobile Menu Overlay */}
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, height: 0 }}
+          initial={reduceMotion ? false : { opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           className="md:hidden bg-wixWhite dark:bg-wixDark border-b border-gray-200 dark:border-gray-800"
         >

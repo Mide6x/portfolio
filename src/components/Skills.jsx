@@ -23,8 +23,10 @@ import {
   FaGlobe,
   FaServer
 } from 'react-icons/fa';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 
 const Skills = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -80,24 +82,26 @@ const Skills = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
-        duration: 1
+        staggerChildren: reduceMotion ? 0 : 0.2,
+        duration: reduceMotion ? 0 : 1
       }
     }
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.8 } }
   };
+
+  const shouldAnimate = reduceMotion || inView;
 
   return (
     <section id="skills" className="py-20 min-h-screen">
       <motion.div
         ref={ref}
         variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        initial={reduceMotion ? "visible" : "hidden"}
+        animate={shouldAnimate ? "visible" : "hidden"}
         className="space-y-12"
       >
         <motion.div variants={itemVariants} className="flex items-center">
@@ -121,7 +125,7 @@ const Skills = () => {
                 {category.skills.map((skill, idx) => (
                   <motion.div
                     key={idx}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={reduceMotion ? undefined : { scale: 1.05 }}
                     className="flex items-center space-x-3 text-textSecondary hover:text-secondary transition-colors"
                   >
                     <div className="text-secondary">
@@ -154,4 +158,4 @@ const Skills = () => {
   );
 };
 
-export default Skills; 
+export default Skills;

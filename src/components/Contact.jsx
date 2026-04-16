@@ -9,8 +9,10 @@ import {
   FaFile,
 } from "react-icons/fa";
 import { SiGooglescholar } from "react-icons/si";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Contact = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -66,25 +68,26 @@ const Contact = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2, // Faster animation
+        staggerChildren: reduceMotion ? 0 : 0.2,
       },
     },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }, // Smoother animation
+    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.4 } },
   };
 
   const categories = ["Direct Contact", "Professional", "Academic", "Social"];
+  const shouldAnimate = reduceMotion || inView;
 
   return (
     <section id="contact" className="py-20 min-h-screen flex items-center">
       <motion.div
         ref={ref}
         variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        initial={reduceMotion ? "visible" : "hidden"}
+        animate={shouldAnimate ? "visible" : "hidden"}
         className="w-full space-y-12"
       >
         <motion.div variants={itemVariants} className="flex items-center">
@@ -124,12 +127,12 @@ const Contact = () => {
                       href={info.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      whileHover={{
+                      whileHover={reduceMotion ? undefined : {
                         scale: 1.05,
                         backgroundColor: "rgba(100, 255, 218, 0.1)",
                       }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex items-center space-x-4 bg-lightNavy p-4 rounded-lg transition-all duration-200 group" // Faster transition
+                      whileTap={reduceMotion ? undefined : { scale: 0.95 }}
+                      className="flex items-center space-x-4 bg-lightNavy p-4 rounded-lg transition-all duration-200 group"
                     >
                       <div className="text-secondary group-hover:text-secondary/80 transition-colors">
                         {info.icon}
@@ -146,20 +149,22 @@ const Contact = () => {
 
         <motion.div variants={itemVariants} className="text-center">
           <motion.button
-            whileHover={{
+            whileHover={reduceMotion ? undefined : {
               scale: 1.05,
               boxShadow: "0 0 8px #64FFDA",
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={reduceMotion ? undefined : { scale: 0.95 }}
             className="border border-secondary text-secondary px-8 py-4 rounded hover:bg-secondary/10 transition relative group"
           >
             <span className="relative z-10">Ciao 👋</span>
-            <motion.div
-              className="absolute inset-0 bg-secondary/20 rounded"
-              initial={{ scale: 0 }}
-              whileHover={{ scale: 1 }}
-              transition={{ duration: 0.2 }} // Faster transition
-            />
+            {!reduceMotion && (
+              <motion.div
+                className="absolute inset-0 bg-secondary/20 rounded"
+                initial={{ scale: 0 }}
+                whileHover={{ scale: 1 }}
+                transition={{ duration: 0.2 }}
+              />
+            )}
           </motion.button>
         </motion.div>
       </motion.div>

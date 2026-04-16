@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { SiOpenai } from "react-icons/si";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Projects = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -35,24 +36,26 @@ const Projects = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        duration: 1,
+        staggerChildren: reduceMotion ? 0 : 0.15,
+        duration: reduceMotion ? 0 : 1,
       },
     },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1 } },
+    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 1 } },
   };
+
+  const shouldAnimate = reduceMotion || inView;
 
   return (
     <section id="projects" className="py-20 min-h-[80vh]">
       <motion.div
         ref={ref}
         variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        initial={reduceMotion ? "visible" : "hidden"}
+        animate={shouldAnimate ? "visible" : "hidden"}
         className="space-y-12"
       >
         <motion.div variants={itemVariants} className="flex flex-col">
@@ -75,7 +78,7 @@ const Projects = () => {
                 key={index}
                 variants={itemVariants}
                 className="group flex flex-col justify-between bg-wixWhite dark:bg-wixDarkCard rounded-2xl p-8 shadow-soft dark:shadow-soft-dark transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-800"
-                whileHover={{
+                whileHover={reduceMotion ? undefined : {
                   y: -5,
                   transition: { duration: 0.2 },
                 }}

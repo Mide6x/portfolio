@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const About = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -13,15 +15,15 @@ const About = () => {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
-        staggerChildren: 0.2,
+        duration: reduceMotion ? 0 : 0.8,
+        staggerChildren: reduceMotion ? 0 : 0.2,
       },
     },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
+    visible: { opacity: 1, x: 0, transition: { duration: reduceMotion ? 0 : 0.8 } },
   };
 
   const researchInterests = [
@@ -31,13 +33,15 @@ const About = () => {
     "Empirical and Theoretical Analysis of AI Impact",
   ];
 
+  const shouldAnimate = reduceMotion || inView;
+
   return (
     <section id="about" className="py-20 min-h-screen flex items-center">
       <motion.div
         ref={ref}
         variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
+        initial={reduceMotion ? "visible" : "hidden"}
+        animate={shouldAnimate ? "visible" : "hidden"}
         className="space-y-8"
       >
         <motion.div variants={itemVariants} className="flex items-center">

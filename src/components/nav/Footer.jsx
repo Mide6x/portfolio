@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
+import usePrefersReducedMotion from "../../hooks/usePrefersReducedMotion";
 
 const Footer = ({ variants }) => {
+  const reduceMotion = usePrefersReducedMotion();
+
   return (
     <motion.div
       variants={variants}
@@ -18,18 +21,22 @@ const Footer = ({ variants }) => {
           </p>
           <p className="md:ml-auto">
             Designed & Built with{" "}
-            <motion.span
-              initial={{ scale: 1 }}
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1.5, // Faster animation
-                repeatType: "reverse",
-              }}
-              className="inline-block text-red-500"
-            >
-              ❤️
-            </motion.span>{" "}
+            {reduceMotion ? (
+              <span className="inline-block text-red-500">❤️</span>
+            ) : (
+              <motion.span
+                initial={{ scale: 1 }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.5,
+                  repeatType: "reverse",
+                }}
+                className="inline-block text-red-500"
+              >
+                ❤️
+              </motion.span>
+            )}{" "}
             by Olumide Adewole
           </p>
         </div>

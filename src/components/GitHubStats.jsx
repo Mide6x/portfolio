@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { graphql } from '@octokit/graphql';
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion';
 
 const GitHubStats = () => {
+  const reduceMotion = usePrefersReducedMotion();
   const [contributions, setContributions] = useState(null);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [ref, inView] = useInView({
@@ -66,17 +68,19 @@ const GitHubStats = () => {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.4,
+        duration: reduceMotion ? 0 : 0.4,
       },
     },
   };
+
+  const shouldAnimate = reduceMotion || inView;
 
   return (
     <motion.div
       ref={ref}
       variants={containerVariants}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
+      initial={reduceMotion ? "visible" : "hidden"}
+      animate={shouldAnimate ? "visible" : "hidden"}
       className="bg-lightNavy rounded-lg p-6 space-y-4"
     >
       <h3 className="text-xl font-bold text-textPrimary">
@@ -104,7 +108,7 @@ const GitHubStats = () => {
               className="h-full bg-secondary"
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0 : 0.8, ease: "easeOut" }}
             />
           </div>
         </div>
@@ -113,4 +117,4 @@ const GitHubStats = () => {
   );
 };
 
-export default GitHubStats; 
+export default GitHubStats;
