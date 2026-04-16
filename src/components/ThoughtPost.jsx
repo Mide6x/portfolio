@@ -87,7 +87,7 @@ const ThoughtPost = () => {
                 <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1 block">
                   AI Summary
                 </span>
-                <p className="text-xl text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic">
+                <p className="text-lg text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic">
                   {thought.excerpt}
                 </p>
               </div>
@@ -111,8 +111,8 @@ const ThoughtPost = () => {
             </div>
           </header>
 
-          <div className="prose prose-lg dark:prose-invert max-w-none font-sans
-            [&_p]:text-justify [&_p]:text-wixTextSecondary dark:[&_p]:text-wixDarkTextSecondary 
+          <div className="prose prose-lg dark:prose-invert max-w-none font-serif
+            [&_p]:text-wixTextSecondary dark:[&_p]:text-wixDarkTextSecondary 
             [&_p]:leading-[1.0] [&_p]:mb-8
             prose-headings:text-wixText dark:prose-headings:text-wixWhite 
             prose-a:text-wixAccent hover:prose-a:text-blue-600 

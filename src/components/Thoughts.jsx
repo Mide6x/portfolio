@@ -35,7 +35,7 @@ const Thoughts = () => {
         <title>Technical Thoughts | Olumide Adewole</title>
         <meta name="description" content="Technical insights, tutorials, and reflections on AI engineering, LLMs, and modern software development." />
       </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 font-serif">
         <h1 className="text-4xl font-bold text-wixText dark:text-wixWhite mb-12 tracking-tight">Thoughts</h1>
         
         {loading && (
