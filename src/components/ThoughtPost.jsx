@@ -64,7 +64,7 @@ const ThoughtPost = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.5 }}
         >
-          
+
           <Link
             to="/thoughts"
             className="inline-flex items-center space-x-2 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixWhite transition-colors font-semibold mb-10"
@@ -72,7 +72,7 @@ const ThoughtPost = () => {
             <FaArrowLeft className="w-4 h-4" />
             <span className="text-sm tracking-widest uppercase">Back to Thoughts</span>
           </Link>
-          
+
           <header className="mb-8 border-b border-gray-100 dark:border-gray-800 pb-6">
             <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
               {format(new Date(thought.published_at), "MMMM do, yyyy")}
@@ -80,7 +80,7 @@ const ThoughtPost = () => {
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6">
               {thought.title}
             </h1>
-            
+
             {/* AI Summary / Excerpt */}
             {thought.excerpt && (
               <div className="mb-6 border-l-4 border-wixAccent pl-6 py-2 bg-blue-50/10 dark:bg-blue-900/5 rounded-r-xl">
@@ -95,17 +95,17 @@ const ThoughtPost = () => {
 
             {/* Author Block */}
             <div className="flex items-center gap-4 mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-              <img 
-                src="/profile-400.webp" 
-                alt="Olumide Adewole" 
+              <img
+                src="/profile-400.webp"
+                alt="Olumide Adewole"
                 className="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700 shadow-sm"
               />
               <div className="flex flex-col">
                 <span className="text-wixText dark:text-wixWhite font-bold text-base">
-                  Olumide Adewole, MBA
+                  Olumide Adewole
                 </span>
                 <span className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-xs font-medium tracking-tight">
-                  AI Engineer <span className="mx-1.5 opacity-50">•</span> York St John University
+                  AI Engineer <span className="mx-1.5 opacity-50">•</span>MBA, York St John University
                 </span>
               </div>
             </div>
@@ -113,7 +113,7 @@ const ThoughtPost = () => {
 
           <div className="prose prose-lg dark:prose-invert max-w-none font-serif
             [&_p]:text-wixTextSecondary dark:[&_p]:text-wixDarkTextSecondary 
-            [&_p]:leading-[1.0] [&_p]:mb-8
+            [&_p]:leading-[1.5] [&_p]:mb-8
             prose-headings:text-wixText dark:prose-headings:text-wixWhite 
             prose-a:text-wixAccent hover:prose-a:text-blue-600 
             prose-strong:text-wixText dark:prose-strong:text-wixWhite">
