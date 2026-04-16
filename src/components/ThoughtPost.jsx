@@ -83,9 +83,14 @@ const ThoughtPost = () => {
             
             {/* AI Summary / Excerpt */}
             {thought.excerpt && (
-              <p className="text-xl text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic mb-10 border-l-4 border-wixAccent pl-6 py-2">
-                {thought.excerpt}
-              </p>
+              <div className="mb-10 border-l-4 border-wixAccent pl-6 py-2 bg-blue-50/10 dark:bg-blue-900/5 rounded-r-xl">
+                <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1.5 block">
+                  AI Summary
+                </span>
+                <p className="text-xl text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic">
+                  {thought.excerpt}
+                </p>
+              </div>
             )}
 
             {/* Author Block */}
@@ -106,7 +111,7 @@ const ThoughtPost = () => {
 
           <div className="prose prose-lg dark:prose-invert max-w-none 
             prose-p:text-wixTextSecondary dark:prose-p:text-wixDarkTextSecondary 
-            prose-p:leading-[1.0] prose-p:mb-8
+            prose-p:leading-[1.0] prose-p:mb-8 prose-p:text-justify
             prose-headings:text-wixText dark:prose-headings:text-wixWhite 
             prose-a:text-wixAccent hover:prose-a:text-blue-600 
             prose-strong:text-wixText dark:prose-strong:text-wixWhite">
