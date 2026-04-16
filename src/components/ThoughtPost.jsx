@@ -77,7 +77,7 @@ const ThoughtPost = () => {
             <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
               {format(new Date(thought.published_at), "MMMM do, yyyy")}
             </time>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6 font-serif">
               {thought.title}
             </h1>
 
@@ -87,7 +87,7 @@ const ThoughtPost = () => {
                 <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1 block">
                   AI Summary
                 </span>
-                <p className="text-lg text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic">
+                <p className="text-sm text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic font-serif">
                   {thought.excerpt}
                 </p>
               </div>
