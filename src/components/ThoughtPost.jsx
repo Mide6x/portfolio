@@ -261,8 +261,8 @@ const ThoughtPost = () => {
                       to={postUrl}
                       className="group block"
                     >
-                      <article className="h-full bg-white dark:bg-wixDarkCard p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-wixAccent dark:hover:border-wixAccent transition-all shadow-soft dark:shadow-soft-dark">
-                        <h4 className="text-lg font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors mb-4 line-clamp-2 font-serif">
+                      <article className="h-full transition-all">
+                        <h4 className="text-lg font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors mb-2 line-clamp-2 font-serif">
                           {t.title}
                         </h4>
                         <p className="text-sm text-wixTextSecondary dark:text-wixDarkTextSecondary line-clamp-3 leading-relaxed">
