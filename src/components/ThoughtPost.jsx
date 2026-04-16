@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
-import { FaArrowLeft, FaLinkedin, FaTwitter, FaLink, FaCheck } from "react-icons/fa";
+import { FaArrowLeft, FaLinkedin, FaTwitter, FaLink, FaCheck, FaDownload } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
@@ -16,6 +16,7 @@ const ThoughtPost = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
+  const [recentThoughts, setRecentThoughts] = useState([]);
   const [copied, setCopied] = useState(false);
 
   const shareUrl = `https://olumide.dev/thoughts/${id}`;
@@ -34,6 +35,17 @@ const ThoughtPost = () => {
         if (!response.ok) throw new Error('Thought not found');
         const data = await response.json();
         setThought(data);
+
+        // Fetch recent thoughts for "More Work" section
+        const thoughtsResponse = await fetch(`${apiBaseUrl}/api/thoughts`);
+        if (thoughtsResponse.ok) {
+          const allThoughts = await thoughtsResponse.json();
+          // Filter out current thought and take first 3
+          const filtered = allThoughts
+            .filter(t => t.id.toString() !== postId.toString())
+            .slice(0, 3);
+          setRecentThoughts(filtered);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -189,8 +201,15 @@ const ThoughtPost = () => {
                   <FaTwitter className="w-4 h-4" />
                 </a>
                 <button
+                  onClick={() => window.print()}
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 print:hidden"
+                  title="Download as PDF"
+                >
+                  <FaDownload className="w-4 h-4" />
+                </button>
+                <button
                   onClick={handleCopyLink}
-                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 relative"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 relative print:hidden"
                   title="Copy link"
                 >
                   {copied ? <FaCheck className="w-4 h-4 text-green-500" /> : <FaLink className="w-4 h-4" />}
@@ -214,6 +233,48 @@ const ThoughtPost = () => {
               {thought.content}
             </ReactMarkdown>
           </div>
+
+          {/* Academic Disclaimer */}
+          <footer className="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
+            <p className="text-[10px] leading-relaxed text-wixTextSecondary/60 dark:text-wixDarkTextSecondary/40 italic font-serif max-w-2xl">
+              Carnegie does not take institutional positions on public policy issues; the views represented herein are those of the author(s) and do not necessarily reflect the views of Carnegie, its staff, or its trustees.
+            </p>
+          </footer>
+
+          {/* Related Discovery Section */}
+          {recentThoughts.length > 0 && (
+            <div className="mt-24 pt-16 border-t border-gray-100 dark:border-gray-800 print:hidden">
+              <h3 className="text-2xl font-bold text-wixText dark:text-wixWhite mb-10 tracking-tight">
+                More Work from Olumide Adewole
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {recentThoughts.map((t) => {
+                  const slug = t.title
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '');
+                  const postUrl = `/thoughts/${t.id}-${slug}`;
+
+                  return (
+                    <Link 
+                      key={t.id} 
+                      to={postUrl}
+                      className="group block"
+                    >
+                      <article className="h-full bg-white dark:bg-wixDarkCard p-6 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-wixAccent dark:hover:border-wixAccent transition-all shadow-soft dark:shadow-soft-dark">
+                        <h4 className="text-lg font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors mb-4 line-clamp-2 font-serif">
+                          {t.title}
+                        </h4>
+                        <p className="text-sm text-wixTextSecondary dark:text-wixDarkTextSecondary line-clamp-3 leading-relaxed">
+                          {t.excerpt}
+                        </p>
+                      </article>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </motion.article>
       </div>
     </section>

@@ -34,3 +34,35 @@ html {
     overflow-wrap: anywhere;
   }
 }
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+  }
+  
+  nav, footer, .print\:hidden, .gradient-orb, .cursor-dot, .cursor-circle {
+    display: none !important;
+  }
+  
+  .max-w-4xl {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .prose {
+    max-width: none !important;
+    color: black !important;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+
+  a {
+    text-decoration: underline;
+    color: black !important;
+  }
+}
