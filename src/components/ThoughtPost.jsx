@@ -73,18 +73,18 @@ const ThoughtPost = () => {
             <span className="text-sm tracking-widest uppercase">Back to Thoughts</span>
           </Link>
           
-          <header className="mb-12 border-b border-gray-100 dark:border-gray-800 pb-10">
+          <header className="mb-8 border-b border-gray-100 dark:border-gray-800 pb-6">
             <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
               {format(new Date(thought.published_at), "MMMM do, yyyy")}
             </time>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-8">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6">
               {thought.title}
             </h1>
             
             {/* AI Summary / Excerpt */}
             {thought.excerpt && (
-              <div className="mb-10 border-l-4 border-wixAccent pl-6 py-2 bg-blue-50/10 dark:bg-blue-900/5 rounded-r-xl">
-                <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1.5 block">
+              <div className="mb-6 border-l-4 border-wixAccent pl-6 py-2 bg-blue-50/10 dark:bg-blue-900/5 rounded-r-xl">
+                <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1 block">
                   AI Summary
                 </span>
                 <p className="text-xl text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic">
@@ -94,7 +94,7 @@ const ThoughtPost = () => {
             )}
 
             {/* Author Block */}
-            <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-4 mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
               <img 
                 src="/profile-400.webp" 
                 alt="Olumide Adewole" 
@@ -111,7 +111,7 @@ const ThoughtPost = () => {
             </div>
           </header>
 
-          <div className="prose prose-lg dark:prose-invert max-w-none 
+          <div className="prose prose-lg dark:prose-invert max-w-none font-sans
             [&_p]:text-justify [&_p]:text-wixTextSecondary dark:[&_p]:text-wixDarkTextSecondary 
             [&_p]:leading-[1.0] [&_p]:mb-8
             prose-headings:text-wixText dark:prose-headings:text-wixWhite 
