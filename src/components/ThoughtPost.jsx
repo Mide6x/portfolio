@@ -94,10 +94,12 @@ const ThoughtPost = () => {
             )}
 
             {/* Author Block */}
-            <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-50 dark:border-gray-800/50">
-              <div className="w-12 h-12 rounded-full bg-wixAccent flex items-center justify-center text-white font-bold text-lg shadow-sm">
-                OA
-              </div>
+            <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+              <img 
+                src="/profile-400.webp" 
+                alt="Olumide Adewole" 
+                className="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700 shadow-sm"
+              />
               <div className="flex flex-col">
                 <span className="text-wixText dark:text-wixWhite font-bold text-base">
                   Olumide Adewole, MBA
@@ -110,8 +112,8 @@ const ThoughtPost = () => {
           </header>
 
           <div className="prose prose-lg dark:prose-invert max-w-none 
-            prose-p:text-wixTextSecondary dark:prose-p:text-wixDarkTextSecondary 
-            prose-p:leading-[1.0] prose-p:mb-8 prose-p:text-justify
+            [&_p]:text-justify [&_p]:text-wixTextSecondary dark:[&_p]:text-wixDarkTextSecondary 
+            [&_p]:leading-[1.0] [&_p]:mb-8
             prose-headings:text-wixText dark:prose-headings:text-wixWhite 
             prose-a:text-wixAccent hover:prose-a:text-blue-600 
             prose-strong:text-wixText dark:prose-strong:text-wixWhite">
