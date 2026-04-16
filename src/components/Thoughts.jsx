@@ -57,29 +57,37 @@ const Thoughts = () => {
             {thoughts.length === 0 ? (
               <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary">No thoughts published yet.</p>
             ) : (
-              thoughts.map((thought) => (
-                <motion.article
-                  key={thought.id}
-                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: reduceMotion ? 0 : 0.5 }}
-                  className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800 group hover:border-wixAccent dark:hover:border-wixAccent transition-all"
-                >
-                  <Link to={`/thoughts/${thought.id}`} className="block space-y-3">
-                    <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block">
-                      {format(new Date(thought.published_at), "MMMM do, yyyy")}
-                    </time>
-                    <h2 className="text-2xl font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors">
-                      {thought.title}
-                    </h2>
-                    <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed">{thought.excerpt}</p>
-                    <div className="pt-4 flex items-center text-wixAccent font-semibold text-sm">
-                      <span className="mr-2 group-hover:mr-4 transition-all w-8 h-px bg-wixAccent inline-block"></span> 
-                      Read more
-                    </div>
-                  </Link>
-                </motion.article>
-              ))
+              thoughts.map((thought) => {
+                const slug = thought.title
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, '-')
+                  .replace(/(^-|-$)/g, '');
+                const postUrl = `/thoughts/${thought.id}-${slug}`;
+
+                return (
+                  <motion.article
+                    key={thought.id}
+                    initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.5 }}
+                    className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800 group hover:border-wixAccent dark:hover:border-wixAccent transition-all"
+                  >
+                    <Link to={postUrl} className="block space-y-3">
+                      <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block">
+                        {format(new Date(thought.published_at), "MMMM do, yyyy")}
+                      </time>
+                      <h2 className="text-2xl font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors font-serif">
+                        {thought.title}
+                      </h2>
+                      <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed">{thought.excerpt}</p>
+                      <div className="pt-4 flex items-center text-wixAccent font-semibold text-sm">
+                        <span className="mr-2 group-hover:mr-4 transition-all w-8 h-px bg-wixAccent inline-block"></span> 
+                        Read more
+                      </div>
+                    </Link>
+                  </motion.article>
+                );
+              })
             )}
           </div>
         )}

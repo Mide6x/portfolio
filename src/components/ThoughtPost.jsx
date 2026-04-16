@@ -10,6 +10,7 @@ import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const ThoughtPost = () => {
   const { id } = useParams();
+  const postId = id.split('-')[0]; // Extract ID from slug (e.g., "3-optimizing-..." -> "3")
   const reduceMotion = usePrefersReducedMotion();
   const [thought, setThought] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +20,7 @@ const ThoughtPost = () => {
   useEffect(() => {
     const fetchThought = async () => {
       try {
-        const response = await fetch(`${apiBaseUrl}/api/thoughts/${id}`);
+        const response = await fetch(`${apiBaseUrl}/api/thoughts/${postId}`);
         if (!response.ok) throw new Error('Thought not found');
         const data = await response.json();
         setThought(data);
@@ -31,7 +32,7 @@ const ThoughtPost = () => {
     };
 
     fetchThought();
-  }, [id]);
+  }, [postId]);
 
   if (loading) {
     return (
@@ -54,9 +55,54 @@ const ThoughtPost = () => {
     <section className="py-24 min-h-screen bg-wixLight dark:bg-wixDark transition-colors">
       <Helmet>
         <title>{thought.title} | Olumide Adewole</title>
-        <meta name="description" content={thought.content.substring(0, 160) + "..."} />
+        <meta name="description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
+        <meta name="author" content="Olumide Adewole" />
+        
+        {/* Canonical URL - Use the full slug-based URL for canonical consistency */}
+        <link rel="canonical" href={`https://olumide.dev/thoughts/${id}`} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://olumide.dev/thoughts/${id}`} />
         <meta property="og:title" content={`${thought.title} | Olumide Adewole`} />
-        <meta property="og:description" content={thought.content.substring(0, 160) + "..."} />
+        <meta property="og:description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
+        <meta property="og:image" content="https://olumide.dev/og-image.png" />
+        <meta property="article:published_time" content={thought.published_at} />
+        <meta property="article:author" content="Olumide Adewole" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${thought.title} | Olumide Adewole`} />
+        <meta name="twitter:description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
+        <meta name="twitter:image" content="https://olumide.dev/og-image.png" />
+
+        {/* Structured Data (JSON-LD) */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            "headline": thought.title,
+            "description": thought.excerpt || thought.content.substring(0, 160) + "...",
+            "author": {
+              "@type": "Person",
+              "name": "Olumide Adewole",
+              "url": "https://olumide.dev"
+            },
+            "publisher": {
+              "@type": "Person",
+              "name": "Olumide Adewole",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://olumide.dev/favicon.svg"
+              }
+            },
+            "datePublished": thought.published_at,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `https://olumide.dev/thoughts/${id}`
+            }
+          })}
+        </script>
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.article
