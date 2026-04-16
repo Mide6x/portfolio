@@ -77,12 +77,39 @@ const ThoughtPost = () => {
             <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
               {format(new Date(thought.published_at), "MMMM do, yyyy")}
             </time>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-8">
               {thought.title}
             </h1>
+            
+            {/* AI Summary / Excerpt */}
+            {thought.excerpt && (
+              <p className="text-xl text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic mb-10 border-l-4 border-wixAccent pl-6 py-2">
+                {thought.excerpt}
+              </p>
+            )}
+
+            {/* Author Block */}
+            <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-50 dark:border-gray-800/50">
+              <div className="w-12 h-12 rounded-full bg-wixAccent flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                OA
+              </div>
+              <div className="flex flex-col">
+                <span className="text-wixText dark:text-wixWhite font-bold text-base">
+                  Olumide Adewole, MBA
+                </span>
+                <span className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-xs font-medium tracking-tight">
+                  AI Engineer <span className="mx-1.5 opacity-50">•</span> York St John University
+                </span>
+              </div>
+            </div>
           </header>
 
-          <div className="prose prose-lg dark:prose-invert max-w-none prose-p:text-wixTextSecondary dark:prose-p:text-wixDarkTextSecondary prose-headings:text-wixText dark:prose-headings:text-wixWhite prose-a:text-wixAccent hover:prose-a:text-blue-600 prose-strong:text-wixText dark:prose-strong:text-wixWhite">
+          <div className="prose prose-lg dark:prose-invert max-w-none 
+            prose-p:text-wixTextSecondary dark:prose-p:text-wixDarkTextSecondary 
+            prose-p:leading-[1.0] prose-p:mb-8
+            prose-headings:text-wixText dark:prose-headings:text-wixWhite 
+            prose-a:text-wixAccent hover:prose-a:text-blue-600 
+            prose-strong:text-wixText dark:prose-strong:text-wixWhite">
             <ReactMarkdown rehypePlugins={[rehypeRaw]}>
               {thought.content}
             </ReactMarkdown>
