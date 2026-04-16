@@ -79,7 +79,8 @@ const ThoughtPost = () => {
         <title>{thought.title} | Olumide Adewole</title>
         <meta name="description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
         <meta name="author" content="Olumide Adewole" />
-        
+        <meta name="language" content="en-GB" />
+
         {/* Canonical URL - Use the full slug-based URL for canonical consistency */}
         <link rel="canonical" href={`https://olumide.dev/thoughts/${id}`} />
 
@@ -89,6 +90,8 @@ const ThoughtPost = () => {
         <meta property="og:title" content={`${thought.title} | Olumide Adewole`} />
         <meta property="og:description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
         <meta property="og:image" content="https://olumide.dev/og-image.png" />
+        <meta property="og:site_name" content="Olumide Adewole" />
+        <meta property="og:locale" content="en_GB" />
         <meta property="article:published_time" content={thought.published_at} />
         <meta property="article:author" content="Olumide Adewole" />
 
@@ -102,7 +105,7 @@ const ThoughtPost = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "TechArticle",
+            "@type": "BlogPosting",
             "headline": thought.title,
             "description": thought.excerpt || thought.content.substring(0, 160) + "...",
             "author": {
@@ -119,6 +122,8 @@ const ThoughtPost = () => {
               }
             },
             "datePublished": thought.published_at,
+            "dateModified": thought.published_at,
+            "inLanguage": "en-GB",
             "mainEntityOfPage": {
               "@type": "WebPage",
               "@id": `https://olumide.dev/thoughts/${id}`
@@ -135,14 +140,14 @@ const ThoughtPost = () => {
 
           <Link
             to="/thoughts"
-            className="inline-flex items-center space-x-2 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixWhite transition-colors font-semibold mb-10"
+            className="inline-flex items-center space-x-2 text-wixText dark:text-wixWhite hover:text-wixAccent dark:hover:text-wixAccent transition-colors font-semibold mb-10"
           >
             <FaArrowLeft className="w-4 h-4" />
             <span className="text-sm tracking-widest uppercase">Back to Thoughts</span>
           </Link>
 
           <header className="mb-8 border-b border-gray-100 dark:border-gray-800 pb-6">
-            <time className="text-wixTextSecondary dark:text-wixDarkTextSecondary font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
+            <time className="text-wixText dark:text-wixWhite font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
               {format(new Date(thought.published_at), "MMMM do, yyyy")}
             </time>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6 font-serif">
@@ -155,7 +160,7 @@ const ThoughtPost = () => {
                 <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1 block">
                   AI Summary
                 </span>
-                <p className="text-sm text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed italic font-serif">
+                <p className="text-sm text-wixText dark:text-wixWhite leading-relaxed italic font-serif">
                   {thought.excerpt}
                 </p>
               </div>
@@ -173,7 +178,7 @@ const ThoughtPost = () => {
                   <span className="text-wixText dark:text-wixWhite font-bold text-base">
                     Olumide Adewole
                   </span>
-                  <span className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-xs font-medium tracking-tight">
+                  <span className="text-wixText dark:text-wixWhite text-xs font-medium tracking-tight">
                     AI Engineer <span className="mx-1.5 opacity-50">•</span>MBA, York St John University
                   </span>
                 </div>
@@ -181,12 +186,12 @@ const ThoughtPost = () => {
 
               {/* Share Buttons */}
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-bold text-wixTextSecondary dark:text-wixDarkTextSecondary uppercase tracking-widest mr-1">Share</span>
+                <span className="text-[10px] font-bold text-wixText dark:text-wixWhite uppercase tracking-widest mr-1">Share</span>
                 <a
                   href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixText dark:text-wixWhite hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700"
                   title="Share on LinkedIn"
                 >
                   <FaLinkedin className="w-4 h-4" />
@@ -195,21 +200,21 @@ const ThoughtPost = () => {
                   href={`https://x.com/intent/post?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-[#1DA1F2] dark:hover:text-white transition-colors border border-gray-100 dark:border-gray-700 font-bold"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixText dark:text-white hover:text-[#1DA1F2] dark:hover:text-white transition-colors border border-gray-100 dark:border-gray-700 font-bold"
                   title="Share on X (Twitter)"
                 >
                   <FaTwitter className="w-4 h-4" />
                 </a>
                 <button
                   onClick={() => window.print()}
-                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 print:hidden"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixText dark:text-wixWhite hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 print:hidden"
                   title="Download as PDF"
                 >
                   <FaDownload className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleCopyLink}
-                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 relative print:hidden"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixText dark:text-wixWhite hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 relative print:hidden"
                   title="Copy link"
                 >
                   {copied ? <FaCheck className="w-4 h-4 text-green-500" /> : <FaLink className="w-4 h-4" />}
@@ -224,7 +229,7 @@ const ThoughtPost = () => {
           </header>
 
           <div className="prose prose-lg dark:prose-invert max-w-none font-serif
-            [&_p]:text-wixTextSecondary dark:[&_p]:text-wixDarkTextSecondary 
+            [&_p]:text-wixText dark:[&_p]:text-wixWhite 
             [&_p]:leading-[1.5] [&_p]:mb-8
             prose-headings:text-wixText dark:prose-headings:text-wixWhite 
             prose-a:text-wixAccent hover:prose-a:text-blue-600 
@@ -237,7 +242,7 @@ const ThoughtPost = () => {
           {/* Academic Disclaimer */}
           <footer className="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
             <p className="text-[10px] leading-relaxed text-wixTextSecondary/60 dark:text-wixDarkTextSecondary/40 italic font-serif max-w-2xl">
-              Carnegie does not take institutional positions on public policy issues; the views represented herein are those of the author(s) and do not necessarily reflect the views of Carnegie, its staff, or its trustees.
+              The writer does not take institutional positions on public policy issues; the views represented herein are those of the author(s) and do not necessarily reflect the views of the writer, its staff, or its trustees.
             </p>
           </footer>
 
@@ -256,8 +261,8 @@ const ThoughtPost = () => {
                   const postUrl = `/thoughts/${t.id}-${slug}`;
 
                   return (
-                    <Link 
-                      key={t.id} 
+                    <Link
+                      key={t.id}
                       to={postUrl}
                       className="group block"
                     >
@@ -265,7 +270,7 @@ const ThoughtPost = () => {
                         <h4 className="text-lg font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors mb-2 line-clamp-2 font-serif">
                           {t.title}
                         </h4>
-                        <p className="text-sm text-wixTextSecondary dark:text-wixDarkTextSecondary line-clamp-3 leading-relaxed">
+                        <p className="text-sm text-wixText dark:text-wixWhite line-clamp-3 leading-relaxed">
                           {t.excerpt}
                         </p>
                       </article>
