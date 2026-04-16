@@ -19,7 +19,7 @@ const ThoughtPost = () => {
   const [copied, setCopied] = useState(false);
 
   const shareUrl = `https://olumide.dev/thoughts/${id}`;
-  const shareTitle = thought ? `${thought.title} | Olumide Adewole` : "";
+  const shareTitle = thought ? thought.title : "";
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -180,10 +180,10 @@ const ThoughtPost = () => {
                   <FaLinkedin className="w-4 h-4" />
                 </a>
                 <a
-                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
+                  href={`https://x.com/intent/post?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-[#1DA1F2] dark:hover:text-[#1DA1F2] transition-colors border border-gray-100 dark:border-gray-700"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-[#1DA1F2] dark:hover:text-white transition-colors border border-gray-100 dark:border-gray-700 font-bold"
                   title="Share on X (Twitter)"
                 >
                   <FaTwitter className="w-4 h-4" />
