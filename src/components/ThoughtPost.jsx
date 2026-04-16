@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { useParams, Link } from "react-router-dom";
 import { format } from "date-fns";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaLinkedin, FaTwitter, FaLink, FaCheck } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
@@ -16,6 +16,16 @@ const ThoughtPost = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
+  const [copied, setCopied] = useState(false);
+
+  const shareUrl = `https://olumide.dev/thoughts/${id}`;
+  const shareTitle = thought ? `${thought.title} | Olumide Adewole` : "";
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   useEffect(() => {
     const fetchThought = async () => {
@@ -139,20 +149,57 @@ const ThoughtPost = () => {
               </div>
             )}
 
-            {/* Author Block */}
-            <div className="flex items-center gap-4 mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
-              <img
-                src="/profile-400.webp"
-                alt="Olumide Adewole"
-                className="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700 shadow-sm"
-              />
-              <div className="flex flex-col">
-                <span className="text-wixText dark:text-wixWhite font-bold text-base">
-                  Olumide Adewole
-                </span>
-                <span className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-xs font-medium tracking-tight">
-                  AI Engineer <span className="mx-1.5 opacity-50">•</span>MBA, York St John University
-                </span>
+            {/* Author & Share Block */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-4">
+                <img
+                  src="/profile-400.webp"
+                  alt="Olumide Adewole"
+                  className="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700 shadow-sm"
+                />
+                <div className="flex flex-col">
+                  <span className="text-wixText dark:text-wixWhite font-bold text-base">
+                    Olumide Adewole
+                  </span>
+                  <span className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-xs font-medium tracking-tight">
+                    AI Engineer <span className="mx-1.5 opacity-50">•</span>MBA, York St John University
+                  </span>
+                </div>
+              </div>
+
+              {/* Share Buttons */}
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-bold text-wixTextSecondary dark:text-wixDarkTextSecondary uppercase tracking-widest mr-1">Share</span>
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700"
+                  title="Share on LinkedIn"
+                >
+                  <FaLinkedin className="w-4 h-4" />
+                </a>
+                <a
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-[#1DA1F2] dark:hover:text-[#1DA1F2] transition-colors border border-gray-100 dark:border-gray-700"
+                  title="Share on X (Twitter)"
+                >
+                  <FaTwitter className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={handleCopyLink}
+                  className="p-2 rounded-full bg-gray-50 dark:bg-gray-800 text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixAccent dark:hover:text-wixAccent transition-colors border border-gray-100 dark:border-gray-700 relative"
+                  title="Copy link"
+                >
+                  {copied ? <FaCheck className="w-4 h-4 text-green-500" /> : <FaLink className="w-4 h-4" />}
+                  {copied && (
+                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-wixText dark:bg-wixWhite text-white dark:text-wixText text-[10px] font-bold py-1 px-2 rounded whitespace-nowrap">
+                      Copied!
+                    </span>
+                  )}
+                </button>
               </div>
             </div>
           </header>
