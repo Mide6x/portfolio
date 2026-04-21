@@ -12,6 +12,11 @@ const usePrefersReducedMotion = () => {
     const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     if (motionQuery?.matches) return true;
 
+    // Touch-first devices tend to have janky scroll-triggered animations.
+    // Treat them as reduced-motion to keep content visible and stable.
+    const coarsePointer = window.matchMedia?.('(pointer: coarse)');
+    if (coarsePointer?.matches) return true;
+
     // Check Network Information API
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (conn) {
@@ -24,22 +29,26 @@ const usePrefersReducedMotion = () => {
 
   useEffect(() => {
     const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const coarsePointer = window.matchMedia?.('(pointer: coarse)');
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 
     const checkConditions = () => {
       const prefersReduced = motionQuery?.matches ?? false;
+      const isTouchFirst = coarsePointer?.matches ?? false;
       const isSlowConnection = conn 
         ? (conn.saveData || conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')
         : false;
       
-      setShouldReduce(prefersReduced || isSlowConnection);
+      setShouldReduce(prefersReduced || isTouchFirst || isSlowConnection);
     };
 
     motionQuery?.addEventListener?.('change', checkConditions);
+    coarsePointer?.addEventListener?.('change', checkConditions);
     conn?.addEventListener?.('change', checkConditions);
 
     return () => {
       motionQuery?.removeEventListener?.('change', checkConditions);
+      coarsePointer?.removeEventListener?.('change', checkConditions);
       conn?.removeEventListener?.('change', checkConditions);
     };
   }, []);

@@ -71,7 +71,7 @@ function App() {
               }
             />
             <Route path="/thoughts" element={<><Thoughts /><Footer variants={footerVariants} /></>} />
-            <Route path="/thoughts/:id" element={<><ThoughtPost /><Footer variants={footerVariants} /></>} />
+            <Route path="/thoughts/:slug" element={<><ThoughtPost /><Footer variants={footerVariants} /></>} />
             <Route path="/cv" element={<><CV /><Footer variants={footerVariants} /></>} />
             <Route path="/admin" element={<><AdminPanel /></>} />
             <Route path="*" element={<><NotFound /><Footer variants={footerVariants} /></>} />

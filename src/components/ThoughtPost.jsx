@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { FaArrowLeft, FaLinkedin, FaTwitter, FaLink, FaCheck, FaDownload } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
+const stripCodexCitations = (text) => {
+  if (typeof text !== "string") return text;
+  // Strips OpenAI web.run citation markers like: citeturn1search10
+  return text
+    .replace(/cite[^]+/g, "")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n");
+};
+
 const ThoughtPost = () => {
-  const { id } = useParams();
-  const postId = id.split('-')[0]; // Extract ID from slug (e.g., "3-optimizing-..." -> "3")
+  const { slug } = useParams();
+  const navigate = useNavigate();
   const reduceMotion = usePrefersReducedMotion();
   const [thought, setThought] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,8 +28,10 @@ const ThoughtPost = () => {
   const [recentThoughts, setRecentThoughts] = useState([]);
   const [copied, setCopied] = useState(false);
 
-  const shareUrl = `https://olumide.dev/thoughts/${id}`;
+  const canonicalSlug = thought?.slug || slug;
+  const shareUrl = `https://olumide.dev/thoughts/${canonicalSlug}`;
   const shareTitle = thought ? thought.title : "";
+  const contentForRender = stripCodexCitations(thought?.content);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -31,10 +42,22 @@ const ThoughtPost = () => {
   useEffect(() => {
     const fetchThought = async () => {
       try {
-        const response = await fetch(`${apiBaseUrl}/api/thoughts/${postId}`);
+        let response = await fetch(`${apiBaseUrl}/api/thoughts/slug/${encodeURIComponent(slug)}`);
+
+        if (!response.ok) {
+          const legacyMatch = /^(\d+)-/.exec(slug);
+          if (legacyMatch) {
+            response = await fetch(`${apiBaseUrl}/api/thoughts/${legacyMatch[1]}`);
+          }
+        }
+
         if (!response.ok) throw new Error('Thought not found');
         const data = await response.json();
         setThought(data);
+
+        if (data?.slug && data.slug !== slug) {
+          navigate(`/thoughts/${data.slug}`, { replace: true });
+        }
 
         // Fetch recent thoughts for "More Work" section
         const thoughtsResponse = await fetch(`${apiBaseUrl}/api/thoughts`);
@@ -42,7 +65,7 @@ const ThoughtPost = () => {
           const allThoughts = await thoughtsResponse.json();
           // Filter out current thought and take first 3
           const filtered = allThoughts
-            .filter(t => t.id.toString() !== postId.toString())
+            .filter(t => t.id.toString() !== data.id.toString())
             .slice(0, 3);
           setRecentThoughts(filtered);
         }
@@ -54,7 +77,7 @@ const ThoughtPost = () => {
     };
 
     fetchThought();
-  }, [postId]);
+  }, [slug]);
 
   if (loading) {
     return (
@@ -82,11 +105,11 @@ const ThoughtPost = () => {
         <meta name="language" content="en-GB" />
 
         {/* Canonical URL - Use the full slug-based URL for canonical consistency */}
-        <link rel="canonical" href={`https://olumide.dev/thoughts/${id}`} />
+        <link rel="canonical" href={`https://olumide.dev/thoughts/${canonicalSlug}`} />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://olumide.dev/thoughts/${id}`} />
+        <meta property="og:url" content={`https://olumide.dev/thoughts/${canonicalSlug}`} />
         <meta property="og:title" content={`${thought.title} | Olumide Adewole`} />
         <meta property="og:description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
         <meta property="og:image" content="https://olumide.dev/og-image.png" />
@@ -126,7 +149,7 @@ const ThoughtPost = () => {
             "inLanguage": "en-GB",
             "mainEntityOfPage": {
               "@type": "WebPage",
-              "@id": `https://olumide.dev/thoughts/${id}`
+              "@id": `https://olumide.dev/thoughts/${canonicalSlug}`
             }
           })}
         </script>
@@ -235,7 +258,7 @@ const ThoughtPost = () => {
             prose-a:text-wixAccent hover:prose-a:text-blue-600 
             prose-strong:text-wixText dark:prose-strong:text-wixWhite">
             <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-              {thought.content}
+              {contentForRender}
             </ReactMarkdown>
           </div>
 
@@ -254,11 +277,12 @@ const ThoughtPost = () => {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {recentThoughts.map((t) => {
-                  const slug = t.title
+                  const titleSlug = t.title
                     .toLowerCase()
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/(^-|-$)/g, '');
-                  const postUrl = `/thoughts/${t.id}-${slug}`;
+                  const postSlug = t.slug || `${t.id}-${titleSlug}`;
+                  const postUrl = `/thoughts/${postSlug}`;
 
                   return (
                     <Link

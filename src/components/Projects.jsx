@@ -8,7 +8,8 @@ const Projects = () => {
   const reduceMotion = usePrefersReducedMotion();
   const [ref, inView] = useInView({
     triggerOnce: true,
-    threshold: 0.2,
+    threshold: 0.1,
+    rootMargin: "0px 0px -10% 0px",
   });
 
   const [projects, setProjects] = useState([]);

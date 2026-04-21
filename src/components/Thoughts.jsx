@@ -34,6 +34,22 @@ const Thoughts = () => {
       <Helmet>
         <title>Technical Thoughts | Olumide Adewole</title>
         <meta name="description" content="Research notes and technical writing on AI engineering, climate analytics, LLMs, and modern software development." />
+        <link rel="canonical" href="https://olumide.dev/thoughts" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://olumide.dev/thoughts" />
+        <meta property="og:title" content="Technical Thoughts | Olumide Adewole" />
+        <meta property="og:description" content="Research notes and technical writing on AI engineering, climate analytics, LLMs, and modern software development." />
+        <meta property="og:image" content="https://olumide.dev/og-image.png" />
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Blog",
+            "name": "Technical Thoughts",
+            "url": "https://olumide.dev/thoughts",
+          })}
+        </script>
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 font-serif">
         <h1 className="text-4xl font-bold text-wixText dark:text-wixWhite mb-12 tracking-tight">Thoughts</h1>
@@ -58,11 +74,12 @@ const Thoughts = () => {
               <p className="text-wixText dark:text-wixWhite">No thoughts published yet.</p>
             ) : (
               thoughts.map((thought) => {
-                const slug = thought.title
+                const titleSlug = thought.title
                   .toLowerCase()
                   .replace(/[^a-z0-9]+/g, '-')
                   .replace(/(^-|-$)/g, '');
-                const postUrl = `/thoughts/${thought.id}-${slug}`;
+                const postSlug = thought.slug || `${thought.id}-${titleSlug}`;
+                const postUrl = `/thoughts/${postSlug}`;
 
                 return (
                   <motion.article
