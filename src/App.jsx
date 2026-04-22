@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import usePrefersReducedMotion, { useIsTouchDevice } from "./hooks/usePrefersReducedMotion";
 import Cursor from "./components/Cursor";
-import GradientOrbs from "./components/GradientOrbs";
 import Navbar from "./components/nav/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -43,7 +42,7 @@ function App() {
   const showDecorations = !reduceMotion && !isTouch;
 
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="relative min-h-screen">
         <Helmet>
           <title>Olumide Adewole | AI Engineer</title>

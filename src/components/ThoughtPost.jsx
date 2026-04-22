@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import { FaArrowLeft, FaLinkedin, FaTwitter, FaLink, FaCheck, FaDownload } from 
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+
+const isExternalHref = (href) => /^https?:\/\//i.test(href || "");
 
 const stripCodexCitations = (text) => {
   if (typeof text !== "string") return text;
@@ -32,6 +34,155 @@ const ThoughtPost = () => {
   const shareUrl = `https://olumide.dev/thoughts/${canonicalSlug}`;
   const shareTitle = thought ? thought.title : "";
   const contentForRender = stripCodexCitations(thought?.content);
+
+  const readingStats = useMemo(() => {
+    const raw = typeof thought?.content === "string" ? thought.content : "";
+    const text = raw
+      .replace(/<[^>]*>/g, " ")
+      .replace(/[`*_>#]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const words = text ? text.split(" ").length : 0;
+    const minutes = words > 0 ? Math.max(1, Math.round(words / 220)) : 0;
+    return { words, minutes };
+  }, [thought?.content]);
+
+  const markdownComponents = {
+    h1: (props) => (
+      <h1
+        {...props}
+        className="mt-10 mb-6 text-3xl sm:text-4xl font-extrabold tracking-tight text-wixText dark:text-wixWhite font-serif"
+      />
+    ),
+    h2: (props) => (
+      <h2
+        {...props}
+        className="mt-12 mb-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-wixText dark:text-wixWhite font-serif scroll-mt-28"
+      />
+    ),
+    h3: (props) => (
+      <h3
+        {...props}
+        className="mt-10 mb-3 text-xl sm:text-2xl font-bold tracking-tight text-wixText dark:text-wixWhite font-serif scroll-mt-28"
+      />
+    ),
+    p: (props) => (
+      <p
+        {...props}
+        className="my-6 text-[17px] leading-8 text-wixText dark:text-wixWhite font-serif"
+      />
+    ),
+    a: ({ href, children, className, ...props }) => (
+      <a
+        {...props}
+        href={href}
+        target={isExternalHref(href) ? "_blank" : undefined}
+        rel={isExternalHref(href) ? "noopener noreferrer" : undefined}
+        className={[
+          "text-wixAccent underline underline-offset-4 decoration-wixAccent/40 hover:decoration-wixAccent hover:text-wixAccent/90 break-words",
+          className,
+        ].filter(Boolean).join(" ")}
+      >
+        {children}
+      </a>
+    ),
+    strong: (props) => (
+      <strong
+        {...props}
+        className="font-bold text-wixText dark:text-wixWhite"
+      />
+    ),
+    em: (props) => (
+      <em
+        {...props}
+        className="italic"
+      />
+    ),
+    ul: (props) => (
+      <ul
+        {...props}
+        className="my-6 pl-6 list-disc marker:text-wixAccent text-wixText dark:text-wixWhite font-serif space-y-2"
+      />
+    ),
+    ol: (props) => (
+      <ol
+        {...props}
+        className="my-6 pl-6 list-decimal marker:text-wixAccent text-wixText dark:text-wixWhite font-serif space-y-2"
+      />
+    ),
+    li: (props) => (
+      <li
+        {...props}
+        className="text-[17px] leading-8"
+      />
+    ),
+    blockquote: (props) => (
+      <blockquote
+        {...props}
+        className="my-8 border-l-4 border-wixAccent/60 pl-5 py-1 text-wixText dark:text-wixWhite bg-wixLight/60 dark:bg-gray-800/30 rounded-r-xl"
+      />
+    ),
+    hr: (props) => (
+      <hr
+        {...props}
+        className="my-12 border-gray-200 dark:border-gray-800"
+      />
+    ),
+    code: ({ inline, className, children, ...props }) => {
+      if (inline) {
+        return (
+          <code
+            {...props}
+            className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[0.95em] font-mono text-wixText dark:text-wixWhite"
+          >
+            {children}
+          </code>
+        );
+      }
+      return (
+        <code
+          {...props}
+          className={["block text-sm leading-6 font-mono", className].filter(Boolean).join(" ")}
+        >
+          {children}
+        </code>
+      );
+    },
+    pre: (props) => (
+      <pre
+        {...props}
+        className="my-8 overflow-x-auto rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/40 p-5"
+      />
+    ),
+    table: (props) => (
+      <div className="my-8 overflow-x-auto">
+        <table
+          {...props}
+          className="w-full border-collapse text-left text-[15px] leading-6"
+        />
+      </div>
+    ),
+    th: (props) => (
+      <th
+        {...props}
+        className="border-b border-gray-200 dark:border-gray-800 py-2 pr-4 font-bold text-wixText dark:text-wixWhite"
+      />
+    ),
+    td: (props) => (
+      <td
+        {...props}
+        className="border-b border-gray-100 dark:border-gray-900 py-2 pr-4 text-wixText dark:text-wixWhite"
+      />
+    ),
+    img: ({ alt, ...props }) => (
+      <img
+        {...props}
+        alt={alt || ""}
+        className="my-8 rounded-2xl border border-gray-100 dark:border-gray-800"
+        loading="lazy"
+      />
+    ),
+  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
@@ -176,6 +327,11 @@ const ThoughtPost = () => {
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6 font-serif">
               {thought.title}
             </h1>
+            {readingStats.minutes > 0 && (
+              <p className="text-xs text-wixTextSecondary dark:text-wixDarkTextSecondary font-semibold tracking-wide mb-6">
+                {readingStats.minutes} min read · {readingStats.words.toLocaleString()} words
+              </p>
+            )}
 
             {/* AI Summary / Excerpt */}
             {thought.excerpt && (
@@ -251,13 +407,8 @@ const ThoughtPost = () => {
             </div>
           </header>
 
-          <div className="prose prose-lg dark:prose-invert max-w-none font-serif
-            [&_p]:text-wixText dark:[&_p]:text-wixWhite 
-            [&_p]:leading-[1.5] [&_p]:mb-8
-            prose-headings:text-wixText dark:prose-headings:text-wixWhite 
-            prose-a:text-wixAccent hover:prose-a:text-blue-600 
-            prose-strong:text-wixText dark:prose-strong:text-wixWhite">
-            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+          <div className="max-w-none">
+            <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>
               {contentForRender}
             </ReactMarkdown>
           </div>
