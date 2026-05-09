@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaUpload, FaPlus, FaBriefcase, FaBook, FaFolderPlus, FaChevronLeft, FaChevronRight, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaUpload, FaPlus, FaBriefcase, FaBook, FaFolderPlus, FaChevronLeft, FaChevronRight, FaEye, FaEyeSlash, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
 import { supabase } from '../supabaseClient';
 
 const AdminPanel = () => {
@@ -13,6 +13,7 @@ const AdminPanel = () => {
 
   const [activeForm, setActiveForm] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [modal, setModal] = useState(null);
 
   // Manage UI States
   const [managedItems, setManagedItems] = useState([]);
@@ -47,12 +48,30 @@ const AdminPanel = () => {
   const [paperDate, setPaperDate] = useState('');
 
   useEffect(() => {
-    const savedToken = sessionStorage.getItem('adminToken');
-    if (savedToken) setSession({ access_token: savedToken });
+    const initialiseSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      const token = data?.session?.access_token || sessionStorage.getItem('adminToken');
+      if (token) setSession({ access_token: token });
+    };
+
+    initialiseSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      const token = currentSession?.access_token;
+      if (token) {
+        setSession({ access_token: token });
+        sessionStorage.setItem('adminToken', token);
+      } else {
+        setSession(null);
+        sessionStorage.removeItem('adminToken');
+      }
+    });
     
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
     }
+
+    return () => authListener?.subscription?.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -69,6 +88,58 @@ const AdminPanel = () => {
     if (formType === 'thought') return 'thoughts';
     if (formType === 'paper') return 'papers';
     return formType; // e.g. 'experience', 'cv'
+  };
+
+  const showNotice = ({ title, message, tone = 'info' }) => {
+    setModal({ type: 'notice', title, message, tone });
+  };
+
+  const showConfirm = ({ title, message, confirmLabel = 'Confirm', tone = 'danger', onConfirm }) => {
+    setModal({ type: 'confirm', title, message, confirmLabel, tone, onConfirm, isWorking: false });
+  };
+
+  const closeModal = () => {
+    setModal(null);
+  };
+
+  const getAdminToken = async () => {
+    const { data } = await supabase.auth.getSession();
+    const token = data?.session?.access_token || session?.access_token || sessionStorage.getItem('adminToken');
+
+    if (token && token !== session?.access_token) {
+      setSession({ access_token: token });
+      sessionStorage.setItem('adminToken', token);
+    }
+
+    return token;
+  };
+
+  const handleAuthFailure = () => {
+    sessionStorage.removeItem('adminToken');
+    setSession(null);
+    showNotice({
+      title: 'Session expired',
+      message: 'Please sign in again before changing dashboard records.',
+      tone: 'danger'
+    });
+  };
+
+  const getErrorMessage = async (res, fallback) => {
+    try {
+      const data = await res.json();
+      return data?.error || fallback;
+    } catch {
+      return fallback;
+    }
+  };
+
+  const getAuthHeaders = async (extraHeaders = {}) => {
+    const token = await getAdminToken();
+    if (!token) {
+      handleAuthFailure();
+      return null;
+    }
+    return { ...extraHeaders, Authorization: `Bearer ${token}` };
   };
 
   useEffect(() => {
@@ -148,56 +219,95 @@ const AdminPanel = () => {
   };
 
   const handleDelete = async (ep, id) => {
-    if (!window.confirm("Are you incredibly sure you want to permanently delete this record?")) return;
+    const item = managedItems.find((record) => record.id === id);
+    const label = item?.title || item?.company || id;
+
+    showConfirm({
+      title: 'Delete record',
+      message: `Are you incredibly sure you want to permanently delete "${label}"? This cannot be undone.`,
+      confirmLabel: 'Delete permanently',
+      tone: 'danger',
+      onConfirm: async () => {
+        await performDelete(ep, id);
+      }
+    });
+  };
+
+  const performDelete = async (ep, id) => {
     try {
+      const headers = await getAuthHeaders();
+      if (!headers) return;
+
       const res = await fetch(`${apiBaseUrl}/api/${ep}/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${session.access_token}` }
+        headers
       });
+
       if (res.ok) {
+        closeModal();
         fetchManagedItems(activeForm);
         if (editingId === id) clearForms(); // Reset if they delete what they are currently editing
+        showNotice({
+          title: 'Record deleted',
+          message: 'The dashboard record was permanently removed.',
+          tone: 'success'
+        });
+      } else if (res.status === 401 || res.status === 403) {
+        closeModal();
+        handleAuthFailure();
       } else {
-        alert("Delete failed.");
+        const message = await getErrorMessage(res, 'Delete failed.');
+        setModal((current) => current ? { ...current, isWorking: false } : current);
+        showNotice({ title: 'Delete failed', message, tone: 'danger' });
       }
     } catch (e) {
       console.error(e);
-      alert("Network Error");
+      showNotice({ title: 'Network error', message: 'The dashboard could not reach the backend.', tone: 'danger' });
     }
   };
 
   const genericSubmit = async (endpoint, payload, fallbackSuccessMsg) => {
-    if (!session) return alert('Session expired');
+    const headers = await getAuthHeaders({ 'Content-Type': 'application/json' });
+    if (!headers) return;
+
     const isEdit = editingId !== null;
     const url = isEdit ? `${apiBaseUrl}/api/${endpoint}/${editingId}` : `${apiBaseUrl}/api/${endpoint}`;
     
     try {
       const res = await fetch(url, {
         method: isEdit ? 'PUT' : 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
+        headers,
         body: JSON.stringify(payload)
       });
       if (res.ok) {
-        alert(isEdit ? 'Record successfully updated!' : fallbackSuccessMsg);
+        showNotice({
+          title: isEdit ? 'Record updated' : 'Record created',
+          message: isEdit ? 'Record successfully updated.' : fallbackSuccessMsg,
+          tone: 'success'
+        });
         clearForms();
         fetchManagedItems(activeForm);
+      } else if (res.status === 401 || res.status === 403) {
+        handleAuthFailure();
       } else {
-        const errorData = await res.json();
-        alert(`Failed: ${errorData.error || 'Unknown error'}`);
+        const message = await getErrorMessage(res, 'Unknown error');
+        showNotice({ title: 'Save failed', message, tone: 'danger' });
       }
     } catch (error) {
       console.error(error);
-      alert('Network error - Is backend running on port 5002?');
+      showNotice({ title: 'Network error', message: 'Is the backend running on port 5002?', tone: 'danger' });
     }
   };
 
   const handleSubmitThoughtDoc = async (e) => {
     e.preventDefault();
-    if (!thoughtFile) return alert('Please select a .docx file first!');
-    if (!session) return alert('Session expired');
+    if (!thoughtFile) {
+      showNotice({ title: 'Missing file', message: 'Please select a .docx file first.', tone: 'danger' });
+      return;
+    }
+
+    const headers = await getAuthHeaders();
+    if (!headers) return;
 
     setIsProcessingAI(true);
     try {
@@ -206,21 +316,27 @@ const AdminPanel = () => {
 
       const res = await fetch(`${apiBaseUrl}/api/thoughts`, { 
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${session.access_token}` },
+        headers,
         body: formData 
       });
 
       if (res.ok) {
-        alert('Document processed by AI and published successfully!');
+        showNotice({
+          title: 'Thought published',
+          message: 'Document processed and published successfully.',
+          tone: 'success'
+        });
         clearForms();
         fetchManagedItems('thought');
+      } else if (res.status === 401 || res.status === 403) {
+        handleAuthFailure();
       } else {
-        const errorData = await res.json();
-        alert(`Failed: ${errorData.error || 'Unknown error'}`);
+        const message = await getErrorMessage(res, 'Unknown error');
+        showNotice({ title: 'Upload failed', message, tone: 'danger' });
       }
     } catch (error) {
       console.error(error);
-      alert('Network error - Is backend running?');
+      showNotice({ title: 'Network error', message: 'Is the backend running?', tone: 'danger' });
     }
     setIsProcessingAI(false);
   };
@@ -282,20 +398,94 @@ const AdminPanel = () => {
     // Map new configurations
     const updates = newItems.map((item, idx) => ({ id: item.id, display_order: idx }));
     try {
+      const headers = await getAuthHeaders({ 'Content-Type': 'application/json' });
+      if (!headers) throw new Error('Unauthorized');
+
       const res = await fetch(`${apiBaseUrl}/api/${endpointString}/batch/reorder`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
+        headers,
         body: JSON.stringify(updates)
       });
+      if (res.status === 401 || res.status === 403) {
+        handleAuthFailure();
+        throw new Error('Unauthorized');
+      }
       if (!res.ok) throw new Error('Failed to reorder');
     } catch (err) {
       console.error(err);
-      alert('Network sync failed. Reverting order.');
+      showNotice({ title: 'Reorder failed', message: 'The order could not be saved. Reverting the list.', tone: 'danger' });
       fetchManagedItems(activeForm);
     }
+  };
+
+  const handleModalConfirm = async () => {
+    if (!modal?.onConfirm || modal.isWorking) return;
+    setModal((current) => current ? { ...current, isWorking: true } : current);
+    try {
+      await modal.onConfirm();
+    } catch (error) {
+      console.error(error);
+      setModal((current) => current ? { ...current, isWorking: false } : current);
+      showNotice({ title: 'Action failed', message: 'The dashboard could not complete that action.', tone: 'danger' });
+    }
+  };
+
+  const renderModal = () => {
+    if (!modal) return null;
+
+    const isDanger = modal.tone === 'danger';
+    const isSuccess = modal.tone === 'success';
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-gray-950/50 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 18, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
+            className="w-full max-w-md rounded-2xl bg-wixWhite dark:bg-wixDarkCard border border-gray-100 dark:border-gray-800 shadow-2xl p-6"
+          >
+            <div className="flex gap-4">
+              <div className={`mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${isDanger ? 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' : isSuccess ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-blue-50 text-wixAccent dark:bg-blue-900/20'}`}>
+                {isSuccess ? <FaCheckCircle /> : <FaExclamationTriangle />}
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-lg font-extrabold text-wixText dark:text-wixWhite">{modal.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-wixTextSecondary dark:text-wixDarkTextSecondary">{modal.message}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+              {modal.type === 'confirm' && (
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  disabled={modal.isWorking}
+                  className="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-wixText dark:text-wixWhite text-sm font-bold transition-colors disabled:opacity-60"
+                >
+                  Cancel
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={modal.type === 'confirm' ? handleModalConfirm : closeModal}
+                disabled={modal.isWorking}
+                className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-colors disabled:opacity-60 ${isDanger ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-wixAccent hover:bg-blue-700 text-white'}`}
+              >
+                {modal.isWorking ? 'Working...' : modal.type === 'confirm' ? modal.confirmLabel : 'OK'}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    );
   };
 
   const renderManageList = (endpointString) => (
@@ -344,42 +534,45 @@ const AdminPanel = () => {
 
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center py-20 px-4 pt-32">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark max-w-md w-full border border-gray-100 dark:border-gray-800"
-        >
-          <div className="flex flex-col items-center mb-8">
-            <h2 className="text-2xl font-bold text-wixText dark:text-wixWhite">Admin Portal</h2>
-            <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-sm mt-2 font-medium">Secure Access Node</p>
-          </div>
-          
-          <form onSubmit={handleLogin} className="space-y-4">
-            <AnimatePresence>
-              {authError && (
-                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="p-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/50 rounded-xl text-red-600 dark:text-red-400 text-sm font-semibold text-center mb-2">
-                  {authError}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <div>
-              <label className="block text-sm font-medium text-wixText dark:text-wixWhite mb-1">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="Your email here" required />
+      <>
+        {renderModal()}
+        <div className="min-h-screen flex items-center justify-center py-20 px-4 pt-32">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark max-w-md w-full border border-gray-100 dark:border-gray-800"
+          >
+            <div className="flex flex-col items-center mb-8">
+              <h2 className="text-2xl font-bold text-wixText dark:text-wixWhite">Admin Portal</h2>
+              <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary text-sm mt-2 font-medium">Secure Access Node</p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-wixText dark:text-wixWhite mb-1">Secure Passkey</label>
-              <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 pr-12 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="••••••••" required />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-wixTextSecondary hover:text-wixText dark:hover:text-wixWhite transition-colors">
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
+            
+            <form onSubmit={handleLogin} className="space-y-4">
+              <AnimatePresence>
+                {authError && (
+                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="p-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/50 rounded-xl text-red-600 dark:text-red-400 text-sm font-semibold text-center mb-2">
+                    {authError}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <div>
+                <label className="block text-sm font-medium text-wixText dark:text-wixWhite mb-1">Email</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="Your email here" required />
               </div>
-            </div>
-            <button type="submit" className="w-full bg-wixAccent text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition duration-300 mt-4 shadow-sm">Authenticate</button>
-          </form>
-        </motion.div>
-      </div>
+              <div>
+                <label className="block text-sm font-medium text-wixText dark:text-wixWhite mb-1">Secure Passkey</label>
+                <div className="relative">
+                  <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 pr-12 py-3 rounded-xl bg-wixLight dark:bg-gray-800 border-none focus:ring-2 focus:ring-wixAccent text-wixText dark:text-wixWhite outline-none transition-all" placeholder="••••••••" required />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-wixTextSecondary hover:text-wixText dark:hover:text-wixWhite transition-colors">
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
+              <button type="submit" className="w-full bg-wixAccent text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition duration-300 mt-4 shadow-sm">Authenticate</button>
+            </form>
+          </motion.div>
+        </div>
+      </>
     );
   }
 
@@ -393,6 +586,7 @@ const AdminPanel = () => {
 
   return (
     <div className="h-screen pt-16 flex overflow-hidden bg-wixLight dark:bg-wixDark">
+      {renderModal()}
       
       {/* Resizable Sidebar */}
       <motion.aside
