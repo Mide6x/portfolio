@@ -16,7 +16,12 @@ const Thoughts = () => {
     const fetchThoughts = async () => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/thoughts`);
-        if (!response.ok) throw new Error('Failed to fetch thoughts');
+        if (!response.ok) {
+          if (response.status === 429) {
+            throw new Error('Too many requests. Please try again later.');
+          }
+          throw new Error('Unable to load thoughts. Please try again later.');
+        }
         const data = await response.json();
         setThoughts(data);
       } catch (err) {
@@ -64,7 +69,7 @@ const Thoughts = () => {
 
         {error && (
           <div className="text-wixAccent bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
-            {error}. Make sure the backend server and Supabase are running.
+            {error}
           </div>
         )}
 
