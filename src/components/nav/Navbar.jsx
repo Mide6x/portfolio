@@ -133,54 +133,43 @@ const Navbar = () => {
   // NORMAL NAVBAR
   // ----------------------------------------------------
   return (
-    <nav className="fixed w-full bg-wixWhite/80 dark:bg-wixDark/80 backdrop-blur-md z-[100] border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-10">
-            <motion.div
-              initial={reduceMotion ? false : { opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-wixText dark:text-wixWhite font-bold text-2xl tracking-tighter cursor-pointer"
-              onClick={() => navigate('/')}
-              whileHover={reduceMotion ? undefined : { 
-                scale: 1.05,
-                transition: { duration: 0.2 }
-              }}
-            >
-              Olumide.
-            </motion.div>
-          </div>
+    <div className="fixed top-0 sm:top-6 left-0 right-0 z-[100] flex justify-center sm:px-4 pointer-events-none">
+      <nav className="pointer-events-auto relative w-full sm:max-w-3xl bg-wixWhite/60 dark:bg-wixDark/60 backdrop-blur-xl border-b sm:border border-gray-200/50 dark:border-gray-800/50 sm:rounded-full px-6 py-3 transition-all duration-300 shadow-sm dark:shadow-[0_4px_20px_rgb(0,0,0,0.2)]">
+        <div className="flex items-center justify-between">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-wixText dark:text-wixWhite font-medium text-xl tracking-wide cursor-pointer"
+            onClick={() => navigate('/')}
+            whileHover={reduceMotion ? undefined : { scale: 1.05 }}
+          >
+            Olumide.
+          </motion.div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <div className="flex items-baseline space-x-6">
+            <div className="flex items-center space-x-6">
               {navItems.map((item, i) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
                   onClick={(e) => handleClick(e, item.href)}
-                  initial={reduceMotion ? false : { opacity: 0, y: -20 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={reduceMotion ? undefined : { delay: i * 0.05 + 0.3 }}
-                  className={`text-sm font-medium transition-colors duration-200 relative group cursor-pointer ${
+                  transition={reduceMotion ? undefined : { delay: i * 0.05 + 0.2 }}
+                  className={`text-sm font-medium transition-colors duration-300 ${
                     (location.pathname === item.href || 
                      (location.pathname === '/' && item.href.includes(location.hash)))
-                      ? 'text-wixText dark:text-wixWhite font-bold'
+                      ? 'text-wixText dark:text-wixWhite'
                       : 'text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite'
                   }`}
                 >
-                  <span>{item.name}</span>
-                  {!reduceMotion && (
-                    <motion.span
-                      className="absolute bottom-[-4px] left-0 w-0 h-0.5 bg-wixAccent dark:bg-wixWhite"
-                      initial={{ width: "0%" }}
-                      whileHover={{ width: "100%" }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
+                  {item.name}
                 </motion.a>
               ))}
             </div>
+
+            <div className="w-[1px] h-4 bg-gray-300 dark:bg-gray-700"></div>
 
             {/* Dark Mode Toggle */}
             <motion.button
@@ -188,58 +177,58 @@ const Navbar = () => {
               animate={{ opacity: 1 }}
               transition={reduceMotion ? undefined : { delay: 0.5 }}
               onClick={toggleTheme}
-              className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite p-2 rounded-full focus:outline-none transition-colors"
+              className="text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite transition-colors"
               aria-label="Toggle Dark Mode"
             >
-              {isDarkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
+              {isDarkMode ? <FaSun size={16} /> : <FaMoon size={16} />}
             </motion.button>
           </div>
 
           {/* Mobile Menu Actions */}
-          <div className="md:hidden flex items-center gap-4">
+          <div className="md:hidden flex items-center gap-5">
             <button
               onClick={toggleTheme}
-              className="text-wixTextSecondary dark:text-wixDarkTextSecondary p-2 focus:outline-none"
+              className="text-wixTextSecondary dark:text-wixDarkTextSecondary focus:outline-none"
             >
               {isDarkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-wixText dark:text-wixWhite hover:opacity-80"
+              className="text-wixText dark:text-wixWhite hover:opacity-80 focus:outline-none"
             >
-              {isOpen ? <FaTimes className="h-6 w-6" /> : <FaBars className="h-6 w-6" />}
+              {isOpen ? <FaTimes className="h-5 w-5" /> : <FaBars className="h-5 w-5" />}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          className="md:hidden bg-wixWhite dark:bg-wixDark border-b border-gray-200 dark:border-gray-800"
-        >
-          <div className="px-4 pt-2 pb-6 space-y-2 shadow-soft dark:shadow-soft-dark">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={`block px-3 py-3 rounded-md font-medium text-base transition-colors ${
-                  (location.pathname === item.href || 
-                   (location.pathname === '/' && item.href.includes(location.hash)))
-                    ? 'text-wixText dark:text-wixWhite font-bold bg-gray-50 dark:bg-gray-800'
-                    : 'text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite hover:bg-gray-50 dark:hover:bg-gray-800'
-                }`}
-                onClick={(e) => handleClick(e, item.href)}
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-        </motion.div>
-      )}
-    </nav>
+        {/* Mobile Menu Overlay */}
+        {isOpen && (
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute top-full left-2 right-2 sm:left-0 sm:right-0 mt-2 bg-wixWhite/90 dark:bg-wixDark/90 backdrop-blur-xl border border-gray-200 dark:border-gray-800 rounded-2xl md:hidden overflow-hidden shadow-lg p-2"
+          >
+            <div className="flex flex-col space-y-1">
+              {navItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={`block px-4 py-3 rounded-xl font-medium text-sm transition-colors ${
+                    (location.pathname === item.href || 
+                     (location.pathname === '/' && item.href.includes(location.hash)))
+                      ? 'text-wixText dark:text-wixWhite bg-gray-100 dark:bg-gray-800/50'
+                      : 'text-wixTextSecondary dark:text-wixDarkTextSecondary hover:text-wixText dark:hover:text-wixWhite hover:bg-gray-50 dark:hover:bg-gray-800/30'
+                  }`}
+                  onClick={(e) => handleClick(e, item.href)}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </nav>
+    </div>
   );
 };
 

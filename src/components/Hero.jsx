@@ -8,6 +8,8 @@ import {
 } from "react-icons/fa";
 import { SiGooglescholar } from "react-icons/si";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import DecryptedText from "./DecryptedText";
+import Shuffle from "./Shuffle";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -27,7 +29,6 @@ const Hero = () => {
   };
 
   const text = "Hi, I'm".split("");
-  const name = "Mide.".split("");
 
   // Social link data to reduce repetition
   const socialLinks = [
@@ -46,14 +47,14 @@ const Hero = () => {
 
   return (
     <section className="min-h-screen flex items-center justify-center py-20">
-      <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_auto] gap-12 items-center">
+      <div className="w-full max-w-4xl mx-auto px-4">
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.8 }}
-          className="space-y-4"
+          className="space-y-6 flex flex-col items-center text-center mx-auto"
         >
-          <div className="flex overflow-hidden">
+          <div className="flex flex-row flex-nowrap overflow-hidden justify-center text-lg md:text-xl tracking-[0.2em] uppercase text-textSecondary whitespace-nowrap">
             {reduceMotion
               ? <span className="text-secondary font-mono inline-block">Hi, I&apos;m</span>
               : text.map((letter, i) => (
@@ -71,56 +72,42 @@ const Hero = () => {
             }
           </div>
 
-          <div className="overflow-hidden">
-            {reduceMotion ? (
-              <h2 className="text-6xl font-bold flex flex-wrap">
-                {name.map((letter, i) => (
-                  <span
-                    key={i}
-                    className="inline-block hover:text-secondary transition-colors duration-300"
-                  >
-                    {letter === " " ? "\u00A0" : letter}
-                  </span>
-                ))}
-              </h2>
-            ) : (
-              <motion.h2
-                className="text-6xl font-bold flex flex-wrap"
-                initial={{ y: 100 }}
-                animate={{ y: 0 }}
-                transition={{
-                  duration: 2,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: 0.5,
-                }}
-              >
-                {name.map((letter, i) => (
-                  <motion.span
-                    key={i}
-                    className="inline-block hover:text-secondary transition-colors duration-300"
-                    whileHover={{
-                      y: -5,
-                      transition: { duration: 0.2 },
-                    }}
-                  >
-                    {letter === " " ? "\u00A0" : letter}
-                  </motion.span>
-                ))}
-              </motion.h2>
-            )}
+          <div className="overflow-hidden mt-2 whitespace-nowrap">
+            <Shuffle
+              text="Olumide"
+              shuffleDirection="right"
+              duration={0.35}
+              animationMode="evenodd"
+              shuffleTimes={1}
+              ease="power3.out"
+              stagger={0.03}
+              threshold={0.1}
+              triggerOnce={true}
+              triggerOnHover={true}
+              respectReducedMotion={true}
+              tag="h2"
+              className="text-5xl sm:text-7xl md:text-8xl font-bold hover:text-secondary transition-colors duration-300 inline-block tracking-tight whitespace-nowrap"
+              textAlign="center"
+            />
           </div>
 
-          <motion.p
-            className="max-w-xl text-textSecondary text-base sm:text-lg leading-relaxed"
+          <motion.div
+            className="max-w-3xl text-textSecondary text-lg sm:text-xl font-light leading-relaxed mx-auto"
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : 2 }}
           >
-            I&apos;m an Artificial Intelligence Engineer and MBA student with a growing research interest in AI, risk, governance, and how organisations adopt intelligent systems for fraud detection and operational risk management.
-          </motion.p>
+            <DecryptedText
+              text={`I’m an Artificial Intelligence Engineer, full-stack developer, and MBA student with a strong interest in building intelligent, secure, and business-focused digital systems. My work sits at the intersection of AI, software engineering, risk, and product strategy, with experience in machine learning, data science, backend systems, mobile applications, and AI-powered automation.\n\nI’m especially interested in how organisations can use intelligent systems responsibly to improve decision-making, detect fraud, manage operational risk, and build scalable products that solve real problems.`}
+              animateOn="view"
+              revealDirection="center"
+              speed={40}
+              maxIterations={15}
+            />
+          </motion.div>
 
           <motion.div
-            className="flex flex-wrap gap-4 sm:gap-6 pt-2"
+            className="flex flex-wrap justify-center gap-6 pt-4"
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : 2.3 }}
@@ -140,7 +127,7 @@ const Hero = () => {
           </motion.div>
 
           <motion.div
-            className="mt-8 flex flex-col sm:flex-row gap-4"
+            className="mt-10 flex flex-col sm:flex-row justify-center gap-6 w-full sm:w-auto"
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: reduceMotion ? 0 : 4.6 }}
@@ -178,79 +165,6 @@ const Hero = () => {
               )}
             </motion.button>
           </motion.div>
-        </motion.div>
-
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, scale: 0.8, x: 50 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 1, delay: reduceMotion ? 0 : 0.5 }}
-          className="relative group hidden md:block"
-        >
-          {/* Decorative Rings (Circlet) */}
-          {!reduceMotion && (
-            <>
-              <div className="absolute -inset-8 border-2 border-secondary/20 rounded-full animate-[spin_20s_linear_infinite] pointer-events-none" />
-              <div className="absolute -inset-5 border border-secondary/40 rounded-full animate-[spin_15s_linear_infinite_reverse] pointer-events-none" />
-            </>
-          )}
-          
-          {/* Image Container */}
-          <div className="relative w-72 h-72 lg:w-[400px] lg:h-[400px] rounded-full border-2 border-secondary p-1 overflow-hidden shadow-[0_0_30px_rgba(100,255,218,0.15)] bg-primary/50 backdrop-blur-sm">
-            <div className="w-full h-full rounded-full overflow-hidden">
-              <picture>
-                <source
-                  srcSet="/profile-400.webp 400w, /profile-800.webp 800w"
-                  sizes="(max-width: 1024px) 288px, 400px"
-                  type="image/webp"
-                />
-                <img
-                  src="/IMG_0802.png"
-                  alt="Olumide Adewole"
-                  width="400"
-                  height="400"
-                  loading="eager"
-                  decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-3"
-                />
-              </picture>
-            </div>
-            
-            {/* Overlay Shine Effect */}
-            {!reduceMotion && (
-              <div className="absolute inset-0 bg-gradient-to-tr from-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            )}
-          </div>
-          
-          {/* Decorative Dot */}
-          {!reduceMotion && (
-            <div className="absolute top-2 right-2 w-5 h-5 bg-secondary rounded-full shadow-[0_0_15px_#64FFDA] animate-pulse" />
-          )}
-        </motion.div>
-
-        {/* Mobile Image */}
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: reduceMotion ? 0 : 0.8, delay: reduceMotion ? 0 : 0.5 }}
-          className="md:hidden block order-first mb-10 justify-self-center"
-        >
-          <div className="relative w-56 h-56 rounded-full border-2 border-secondary p-1 overflow-hidden shadow-[0_0_20px_rgba(100,255,218,0.1)]">
-            <picture>
-              <source
-                srcSet="/profile-400.webp"
-                type="image/webp"
-              />
-              <img
-                src="/IMG_0802.png"
-                alt="Olumide Adewole"
-                width="224"
-                height="224"
-                loading="eager"
-                decoding="async"
-                className="w-full h-full rounded-full object-cover shadow-lg"
-              />
-            </picture>
-          </div>
         </motion.div>
       </div>
     </section>

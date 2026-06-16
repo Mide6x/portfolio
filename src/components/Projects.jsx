@@ -22,7 +22,8 @@ const Projects = () => {
         const response = await fetch(`${apiBaseUrl}/api/projects`);
         if (!response.ok) throw new Error('Failed');
         const data = await response.json();
-        setProjects(data);
+        const filteredData = data.filter(p => !p.title.includes("Restaurants by unboxie"));
+        setProjects(filteredData);
       } catch (err) {
         console.error(err);
       } finally {
