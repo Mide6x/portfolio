@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { FaExternalLinkAlt, FaExclamationCircle, FaSync } from "react-icons/fa";
+import { FaExternalLinkAlt, FaSync } from "react-icons/fa";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Projects = () => {
@@ -83,7 +83,6 @@ const Projects = () => {
             variants={itemVariants}
             className="flex flex-col items-center justify-center p-12 text-center bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/30 rounded-3xl max-w-xl mx-auto shadow-sm"
           >
-            <FaExclamationCircle className="text-red-500 dark:text-red-400 text-5xl mb-4" />
             <h3 className="text-xl font-bold text-wixText dark:text-wixWhite mb-2">Failed to Load Projects</h3>
             <p className="text-base text-wixTextSecondary dark:text-wixDarkTextSecondary mb-6 max-w-md">{error}</p>
             <button
