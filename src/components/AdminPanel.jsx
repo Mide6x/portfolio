@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaUpload, FaPlus, FaBriefcase, FaBook, FaFolderPlus, FaChevronLeft, FaChevronRight, FaEye, FaEyeSlash, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
-import { supabase } from '../supabaseClient';
+
 
 const AdminPanel = () => {
   const [session, setSession] = useState(null);
@@ -48,30 +48,14 @@ const AdminPanel = () => {
   const [paperDate, setPaperDate] = useState('');
 
   useEffect(() => {
-    const initialiseSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      const token = data?.session?.access_token || sessionStorage.getItem('adminToken');
-      if (token) setSession({ access_token: token });
-    };
-
-    initialiseSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
-      const token = currentSession?.access_token;
-      if (token) {
-        setSession({ access_token: token });
-        sessionStorage.setItem('adminToken', token);
-      } else {
-        setSession(null);
-        sessionStorage.removeItem('adminToken');
-      }
-    });
+    const token = sessionStorage.getItem('adminToken');
+    if (token) {
+      setSession({ access_token: token });
+    }
     
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
     }
-
-    return () => authListener?.subscription?.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -103,10 +87,9 @@ const AdminPanel = () => {
   };
 
   const getAdminToken = async () => {
-    const { data } = await supabase.auth.getSession();
-    const token = data?.session?.access_token || session?.access_token || sessionStorage.getItem('adminToken');
+    const token = session?.access_token || sessionStorage.getItem('adminToken');
 
-    if (token && token !== session?.access_token) {
+    if (token && (!session || token !== session.access_token)) {
       setSession({ access_token: token });
       sessionStorage.setItem('adminToken', token);
     }
@@ -172,21 +155,29 @@ const AdminPanel = () => {
       return;
     }
     
-    // Trade the raw credentials directly with Supabase securely for a JWT
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    try {
+      const res = await fetch(`${apiBaseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-    if (error) {
-      setAuthError(error.message);
-      return;
-    }
-
-    // Now your front-end natively possesses a cryptographically backed JWT token!
-    if (data?.session?.access_token) {
-      setSession({ access_token: data.session.access_token });
-      window.dispatchEvent(new Event("storage"));
+      if (res.ok) {
+        const data = await res.json();
+        if (data.access_token) {
+          setSession({ access_token: data.access_token });
+          sessionStorage.setItem('adminToken', data.access_token);
+          window.dispatchEvent(new Event("storage"));
+        } else {
+          setAuthError('Authentication failed.');
+        }
+      } else {
+        const errData = await res.json();
+        setAuthError(errData?.error || 'Authentication failed.');
+      }
+    } catch (err) {
+      console.error(err);
+      setAuthError('Network error. Could not reach backend.');
     }
   };
 

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { FaExclamationCircle, FaSync } from "react-icons/fa";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Thoughts = () => {
@@ -12,27 +13,30 @@ const Thoughts = () => {
   const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
 
-  useEffect(() => {
-    const fetchThoughts = async () => {
-      try {
-        const response = await fetch(`${apiBaseUrl}/api/thoughts`);
-        if (!response.ok) {
-          if (response.status === 429) {
-            throw new Error('Too many requests. Please try again later.');
-          }
-          throw new Error('Unable to load thoughts. Please try again later.');
+  const fetchThoughts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/thoughts`);
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error('Too many requests. Please try again later.');
         }
-        const data = await response.json();
-        setThoughts(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        throw new Error('Unable to load thoughts. The API server might be offline.');
       }
-    };
+      const data = await response.json();
+      setThoughts(data);
+    } catch (err) {
+      console.error(err);
+      setError(err.message === 'Failed to fetch' ? 'Unable to connect to the API server.' : err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [apiBaseUrl]);
 
+  useEffect(() => {
     fetchThoughts();
-  }, []);
+  }, [fetchThoughts]);
 
   return (
     <section className="py-20 min-h-screen bg-wixLight dark:bg-wixDark transition-colors">
@@ -68,9 +72,22 @@ const Thoughts = () => {
         )}
 
         {error && (
-          <div className="text-wixAccent bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
-            {error}
-          </div>
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center p-12 text-center bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/30 rounded-3xl max-w-xl mx-auto shadow-sm font-sans"
+          >
+            <FaExclamationCircle className="text-red-500 dark:text-red-400 text-5xl mb-4" />
+            <h3 className="text-xl font-bold text-wixText dark:text-wixWhite mb-2">Failed to Load Thoughts</h3>
+            <p className="text-base text-wixTextSecondary dark:text-wixDarkTextSecondary mb-6 max-w-md">{error}</p>
+            <button
+              onClick={fetchThoughts}
+              className="flex items-center space-x-2 bg-wixAccent text-white px-6 py-3 rounded-full hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition font-bold text-sm shadow-md cursor-pointer"
+            >
+              <FaSync className="w-3.5 h-3.5" />
+              <span>Retry Connection</span>
+            </button>
+          </motion.div>
         )}
 
         {!loading && !error && (

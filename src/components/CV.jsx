@@ -1,36 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { FaArrowLeft, FaPrint, FaLinkedin, FaGithub, FaGlobe, FaGraduationCap, FaBriefcase, FaBook, FaExternalLinkAlt } from "react-icons/fa";
+import { FaArrowLeft, FaPrint, FaLinkedin, FaGithub, FaGlobe, FaGraduationCap, FaBriefcase, FaBook, FaExternalLinkAlt, FaExclamationCircle, FaSync } from "react-icons/fa";
 
 const CV = () => {
   const [projects, setProjects] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        const [projRes, expRes, paperRes] = await Promise.all([
-          fetch(`${apiBaseUrl}/api/projects`),
-          fetch(`${apiBaseUrl}/api/experience`),
-          fetch(`${apiBaseUrl}/api/papers`)
-        ]);
-        
-        if (projRes.ok) setProjects(await projRes.json());
-        if (expRes.ok) setExperiences(await expRes.json());
-        if (paperRes.ok) setPapers(await paperRes.json());
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const fetchAllData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [projRes, expRes, paperRes] = await Promise.all([
+        fetch(`${apiBaseUrl}/api/projects`),
+        fetch(`${apiBaseUrl}/api/experience`),
+        fetch(`${apiBaseUrl}/api/papers`)
+      ]);
+      
+      if (!projRes.ok || !expRes.ok || !paperRes.ok) {
+        throw new Error('Some API resources failed to load.');
       }
-    };
+      
+      setProjects(await projRes.json());
+      setExperiences(await expRes.json());
+      setPapers(await paperRes.json());
+    } catch (err) {
+      console.error(err);
+      setError('Unable to load curriculum vitae data. The API server might be offline.');
+    } finally {
+      setLoading(false);
+    }
+  }, [apiBaseUrl]);
+
+  useEffect(() => {
     fetchAllData();
-  }, []);
+  }, [fetchAllData]);
 
   const handlePrint = () => {
     window.print();
@@ -125,6 +134,23 @@ const CV = () => {
             <div className="h-40 bg-gray-100 dark:bg-gray-800 rounded-2xl w-full"></div>
             <div className="h-40 bg-gray-100 dark:bg-gray-800 rounded-2xl w-full"></div>
           </div>
+        ) : error ? (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center p-12 text-center bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/30 rounded-3xl max-w-xl mx-auto shadow-sm"
+          >
+            <FaExclamationCircle className="text-red-500 dark:text-red-400 text-5xl mb-4" />
+            <h3 className="text-xl font-bold text-wixText dark:text-wixWhite mb-2">Failed to Load CV Data</h3>
+            <p className="text-base text-wixTextSecondary dark:text-wixDarkTextSecondary mb-6 max-w-md">{error}</p>
+            <button
+              onClick={fetchAllData}
+              className="flex items-center space-x-2 bg-wixAccent text-white px-6 py-3 rounded-full hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition font-bold text-sm shadow-md cursor-pointer"
+            >
+              <FaSync className="w-3.5 h-3.5" />
+              <span>Retry Connection</span>
+            </button>
+          </motion.div>
         ) : (
           <main className="space-y-16">
             {/* Project Experience */}

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { FaBriefcase } from "react-icons/fa";
+import { FaBriefcase, FaSync } from "react-icons/fa";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const Experience = () => {
@@ -14,23 +14,28 @@ const Experience = () => {
 
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
 
+  const fetchExp = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/experience`);
+      if (!response.ok) throw new Error('Failed to load experience');
+      const data = await response.json();
+      setExperiences(data);
+    } catch (err) {
+      console.error(err);
+      setError('Unable to load experience. The API server might be offline.');
+    } finally {
+      setLoading(false);
+    }
+  }, [apiBaseUrl]);
+
   useEffect(() => {
-    const fetchExp = async () => {
-      try {
-        const response = await fetch(`${apiBaseUrl}/api/experience`);
-        if (!response.ok) throw new Error('Failed');
-        const data = await response.json();
-        setExperiences(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchExp();
-  }, []);
+  }, [fetchExp]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -72,6 +77,22 @@ const Experience = () => {
               <div key={i} className="animate-pulse bg-wixWhite dark:bg-wixDarkCard h-32 rounded-2xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800"></div>
             ))}
           </div>
+        ) : error ? (
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col items-center justify-center p-12 text-center bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/30 rounded-3xl max-w-xl mx-auto shadow-sm"
+          >
+
+            <h3 className="text-xl font-bold text-wixText dark:text-wixWhite mb-2">Failed to Load Experience</h3>
+            <p className="text-base text-wixTextSecondary dark:text-wixDarkTextSecondary mb-6 max-w-md">{error}</p>
+            <button
+              onClick={fetchExp}
+              className="flex items-center space-x-2 bg-wixAccent text-white px-6 py-3 rounded-full hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition font-bold text-sm shadow-md cursor-pointer"
+            >
+              <FaSync className="w-3.5 h-3.5" />
+              <span>Retry Connection</span>
+            </button>
+          </motion.div>
         ) : (
           <div className="space-y-12">
             {experiences.map((exp, index) => (
