@@ -51,25 +51,25 @@ const ThoughtPost = () => {
     h1: (props) => (
       <h1
         {...props}
-        className="mt-10 mb-6 text-3xl sm:text-4xl font-extrabold tracking-tight text-wixText dark:text-wixWhite font-serif"
+        className="mt-10 mb-6 text-3xl sm:text-4xl font-extrabold tracking-tight text-wixText dark:text-wixWhite"
       />
     ),
     h2: (props) => (
       <h2
         {...props}
-        className="mt-12 mb-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-wixText dark:text-wixWhite font-serif scroll-mt-28"
+        className="mt-12 mb-4 text-2xl sm:text-3xl font-extrabold tracking-tight text-wixText dark:text-wixWhite scroll-mt-28"
       />
     ),
     h3: (props) => (
       <h3
         {...props}
-        className="mt-10 mb-3 text-xl sm:text-2xl font-bold tracking-tight text-wixText dark:text-wixWhite font-serif scroll-mt-28"
+        className="mt-10 mb-3 text-xl sm:text-2xl font-bold tracking-tight text-wixText dark:text-wixWhite scroll-mt-28"
       />
     ),
     p: (props) => (
       <p
         {...props}
-        className="my-6 text-[17px] leading-8 text-wixText dark:text-wixWhite font-serif"
+        className="my-6 text-[17px] leading-8 text-wixText dark:text-wixWhite"
       />
     ),
     a: ({ href, children, className, ...props }) => (
@@ -101,13 +101,13 @@ const ThoughtPost = () => {
     ul: (props) => (
       <ul
         {...props}
-        className="my-6 pl-6 list-disc marker:text-wixAccent text-wixText dark:text-wixWhite font-serif space-y-2"
+        className="my-6 pl-6 list-disc marker:text-wixAccent text-wixText dark:text-wixWhite space-y-2"
       />
     ),
     ol: (props) => (
       <ol
         {...props}
-        className="my-6 pl-6 list-decimal marker:text-wixAccent text-wixText dark:text-wixWhite font-serif space-y-2"
+        className="my-6 pl-6 list-decimal marker:text-wixAccent text-wixText dark:text-wixWhite space-y-2"
       />
     ),
     li: (props) => (
@@ -324,7 +324,7 @@ const ThoughtPost = () => {
             <time className="text-wixText dark:text-wixWhite font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block mb-4">
               {format(new Date(thought.published_at), "MMMM do, yyyy")}
             </time>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6 font-serif">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-wixText dark:text-wixWhite leading-tight tracking-tight mb-6">
               {thought.title}
             </h1>
             {readingStats.minutes > 0 && (
@@ -339,7 +339,7 @@ const ThoughtPost = () => {
                 <span className="text-[10px] font-black tracking-[0.2em] text-wixAccent uppercase mb-1 block">
                   AI Summary
                 </span>
-                <p className="text-sm text-wixText dark:text-wixWhite leading-relaxed italic font-serif">
+                <p className="text-sm text-wixText dark:text-wixWhite leading-relaxed italic">
                   {thought.excerpt}
                 </p>
               </div>
@@ -415,7 +415,7 @@ const ThoughtPost = () => {
 
           {/* Academic Disclaimer */}
           <footer className="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
-            <p className="text-[10px] leading-relaxed text-wixTextSecondary/60 dark:text-wixDarkTextSecondary/40 italic font-serif max-w-2xl">
+            <p className="text-[10px] leading-relaxed text-wixTextSecondary/60 dark:text-wixDarkTextSecondary/40 italic max-w-2xl">
               The writer does not take institutional positions on public policy issues; the views represented herein are those of the author(s) and do not necessarily reflect the views of the writer, its staff, or its trustees.
             </p>
           </footer>
@@ -442,7 +442,7 @@ const ThoughtPost = () => {
                       className="group block"
                     >
                       <article className="h-full transition-all">
-                        <h4 className="text-lg font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors mb-2 line-clamp-2 font-serif">
+                        <h4 className="text-lg font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors mb-2 line-clamp-2">
                           {t.title}
                         </h4>
                         <p className="text-sm text-wixText dark:text-wixWhite line-clamp-3 leading-relaxed">

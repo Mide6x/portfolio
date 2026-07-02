@@ -16,6 +16,7 @@ import CV from "./components/CV";
 import NotFound from "./components/NotFound";
 import Footer from "./components/nav/Footer";
 import AdminPanel from "./components/AdminPanel";
+import OzarkChatbot from "./components/OzarkChatbot";
 
 // Create a ScrollToTop component
 const ScrollToTop = () => {
@@ -76,6 +77,7 @@ function App() {
             <Route path="*" element={<><NotFound /><Footer variants={footerVariants} /></>} />
           </Routes>
         </div>
+        <OzarkChatbot />
       </div>
     </BrowserRouter>
   );

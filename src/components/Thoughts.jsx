@@ -60,13 +60,13 @@ const Thoughts = () => {
           })}
         </script>
       </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 font-serif">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
         <h1 className="text-4xl font-bold text-wixText dark:text-wixWhite mb-12 tracking-tight">Thoughts</h1>
         
         {loading && (
           <div className="space-y-6">
             {[1, 2, 3].map(i => (
-              <div key={i} className="animate-pulse bg-white dark:bg-wixDarkCard h-40 rounded-2xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800"></div>
+              <div key={i} className="animate-pulse bg-white dark:bg-wixDarkCard h-36 rounded-2xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800"></div>
             ))}
           </div>
         )}
@@ -108,17 +108,17 @@ const Thoughts = () => {
                     initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: reduceMotion ? 0 : 0.5 }}
-                    className="bg-wixWhite dark:bg-wixDarkCard p-8 rounded-3xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800 group hover:border-wixAccent dark:hover:border-wixAccent transition-all"
+                    className="bg-wixWhite dark:bg-wixDarkCard p-5 md:p-6 rounded-2xl shadow-soft dark:shadow-soft-dark border border-gray-100 dark:border-gray-800 group hover:border-wixAccent dark:hover:border-wixAccent transition-all"
                   >
-                    <Link to={postUrl} className="block space-y-3">
-                      <time className="text-wixText dark:text-wixWhite font-bold text-sm tracking-wide bg-wixLight dark:bg-gray-800 px-3 py-1 rounded-md inline-block">
+                    <Link to={postUrl} className="block space-y-2">
+                      <time className="text-wixText dark:text-wixWhite font-bold text-xs tracking-wide bg-wixLight dark:bg-gray-800 px-2.5 py-0.5 rounded inline-block">
                         {format(new Date(thought.published_at), "MMMM do, yyyy")}
                       </time>
-                      <h2 className="text-2xl font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors font-serif">
+                      <h2 className="text-xl md:text-2xl font-bold text-wixText dark:text-wixWhite group-hover:text-wixAccent transition-colors">
                         {thought.title}
                       </h2>
-                      <p className="text-wixText dark:text-wixWhite leading-relaxed">{thought.excerpt}</p>
-                      <div className="pt-4 flex items-center text-wixAccent font-semibold text-sm">
+                      <p className="text-wixTextSecondary dark:text-wixDarkTextSecondary leading-relaxed text-sm line-clamp-2">{thought.excerpt}</p>
+                      <div className="pt-2 flex items-center text-wixAccent font-semibold text-sm">
                         <span className="mr-2 group-hover:mr-4 transition-all w-8 h-px bg-wixAccent inline-block"></span> 
                         Read more
                       </div>

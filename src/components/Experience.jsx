@@ -56,7 +56,7 @@ const Experience = () => {
   const shouldAnimate = reduceMotion || inView;
 
   return (
-    <section id="experience" className="py-20 min-h-[80vh]">
+    <section id="experience" className="pt-6 pb-16">
       <motion.div
         ref={ref}
         variants={containerVariants}
