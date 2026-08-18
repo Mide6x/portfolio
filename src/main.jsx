@@ -13,7 +13,7 @@ const app = (
     <HelmetProvider>
       <App />
     </HelmetProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 )
 
 if (initialData) {
