@@ -6,15 +6,18 @@ import { format } from "date-fns";
 import { FaArrowLeft, FaLinkedin, FaTwitter, FaLink, FaCheck, FaDownload } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const isExternalHref = (href) => /^https?:\/\//i.test(href || "");
 
 const stripCodexCitations = (text) => {
   if (typeof text !== "string") return text;
-  // Strips OpenAI web.run citation markers like: citeturn1search10
+  // Strips OpenAI web.run citation markers like: citeturn1search10, citeturn0source3, etc.
+  // The old `/cite[^]+/g` pattern was catastrophically greedy — it matched everything
+  // after the first occurrence of "cite" in the entire string.
   return text
-    .replace(/cite[^]+/g, "")
+    .replace(/cite(?:turn|source|web)\d+\w*/gi, "")
     .replace(/[ \t]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n");
 };
@@ -128,12 +131,16 @@ const ThoughtPost = () => {
         className="my-12 border-gray-200 dark:border-gray-800"
       />
     ),
-    code: ({ inline, className, children, ...props }) => {
-      if (inline) {
+    code: ({ node, className, children, ...props }) => {
+      // react-markdown v10 dropped the `inline` prop.
+      // Detect inline code by checking whether the direct parent is a <pre> element.
+      const parentIsPre = node?.parent?.type === "element" && node?.parent?.tagName === "pre";
+      if (!parentIsPre) {
+        // Inline code — stays in the text flow
         return (
           <code
             {...props}
-            className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[0.95em] font-mono text-wixText dark:text-wixWhite"
+            className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[0.9em] font-mono text-wixText dark:text-wixWhite break-words"
           >
             {children}
           </code>
@@ -155,23 +162,41 @@ const ThoughtPost = () => {
       />
     ),
     table: (props) => (
-      <div className="my-8 overflow-x-auto">
+      <div className="my-8 overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
         <table
           {...props}
           className="w-full border-collapse text-left text-[15px] leading-6"
         />
       </div>
     ),
+    thead: (props) => (
+      <thead
+        {...props}
+        className="bg-gray-50 dark:bg-gray-900/60"
+      />
+    ),
+    tbody: (props) => (
+      <tbody
+        {...props}
+        className="divide-y divide-gray-100 dark:divide-gray-800"
+      />
+    ),
+    tr: (props) => (
+      <tr
+        {...props}
+        className="even:bg-gray-50/60 dark:even:bg-gray-900/30 transition-colors"
+      />
+    ),
     th: (props) => (
       <th
         {...props}
-        className="border-b border-gray-200 dark:border-gray-800 py-2 pr-4 font-bold text-wixText dark:text-wixWhite"
+        className="px-4 py-3 font-bold text-[13px] uppercase tracking-wider text-wixText dark:text-wixWhite border-b border-gray-200 dark:border-gray-700 whitespace-nowrap"
       />
     ),
     td: (props) => (
       <td
         {...props}
-        className="border-b border-gray-100 dark:border-gray-900 py-2 pr-4 text-wixText dark:text-wixWhite"
+        className="px-4 py-3 text-wixText dark:text-wixWhite align-top"
       />
     ),
     img: ({ alt, ...props }) => (
@@ -408,7 +433,11 @@ const ThoughtPost = () => {
           </header>
 
           <div className="max-w-none">
-            <ReactMarkdown rehypePlugins={[rehypeRaw]} components={markdownComponents}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+              components={markdownComponents}
+            >
               {contentForRender}
             </ReactMarkdown>
           </div>
