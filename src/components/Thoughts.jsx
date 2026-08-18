@@ -5,11 +5,16 @@ import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { FaSync } from "react-icons/fa";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import { clearInitialData, getInitialData } from "../utils/initialData";
 
 const Thoughts = () => {
   const reduceMotion = usePrefersReducedMotion();
-  const [thoughts, setThoughts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const initialData = getInitialData();
+  const initialThoughts = initialData?.route === "thoughts-index" && Array.isArray(initialData?.thoughts)
+    ? initialData.thoughts
+    : [];
+  const [thoughts, setThoughts] = useState(initialThoughts);
+  const [loading, setLoading] = useState(initialThoughts.length === 0);
   const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
 
@@ -35,8 +40,12 @@ const Thoughts = () => {
   }, [apiBaseUrl]);
 
   useEffect(() => {
+    if (initialThoughts.length > 0) {
+      clearInitialData();
+      return;
+    }
     fetchThoughts();
-  }, [fetchThoughts]);
+  }, [fetchThoughts, initialThoughts.length]);
 
   return (
     <section className="py-20 min-h-screen bg-wixLight dark:bg-wixDark transition-colors">

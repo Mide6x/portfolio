@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import { clearInitialData, getInitialData } from "../utils/initialData";
 
 const isExternalHref = (href) => /^https?:\/\//i.test(href || "");
 
@@ -26,11 +27,17 @@ const ThoughtPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const reduceMotion = usePrefersReducedMotion();
-  const [thought, setThought] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const initialData = getInitialData();
+  const matchesInitialRoute = initialData?.route === "thought-post" && initialData?.slug === slug;
+  const initialThought = matchesInitialRoute ? initialData?.thought ?? null : null;
+  const initialRecentThoughts = matchesInitialRoute && Array.isArray(initialData?.recentThoughts)
+    ? initialData.recentThoughts
+    : [];
+  const [thought, setThought] = useState(initialThought);
+  const [loading, setLoading] = useState(!initialThought);
   const [error, setError] = useState(null);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5002';
-  const [recentThoughts, setRecentThoughts] = useState([]);
+  const [recentThoughts, setRecentThoughts] = useState(initialRecentThoughts);
   const [copied, setCopied] = useState(false);
 
   const canonicalSlug = thought?.slug || slug;
@@ -216,6 +223,11 @@ const ThoughtPost = () => {
   };
 
   useEffect(() => {
+    if (initialThought && initialThought.slug === slug) {
+      clearInitialData();
+      return;
+    }
+
     const fetchThought = async () => {
       try {
         let response = await fetch(`${apiBaseUrl}/api/thoughts/slug/${encodeURIComponent(slug)}`);
@@ -253,7 +265,7 @@ const ThoughtPost = () => {
     };
 
     fetchThought();
-  }, [slug]);
+  }, [apiBaseUrl, initialThought, navigate, slug]);
 
   if (loading) {
     return (
