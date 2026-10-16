@@ -300,7 +300,7 @@ const ThoughtPost = () => {
         <meta property="og:url" content={`https://olumide.dev/thoughts/${canonicalSlug}`} />
         <meta property="og:title" content={`${thought.title} | Olumide Adewole`} />
         <meta property="og:description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
-        <meta property="og:image" content="https://olumide.dev/og-image.png" />
+        <meta property="og:image" content="https://olumide.dev/og-image.jpg" />
         <meta property="og:site_name" content="Olumide Adewole" />
         <meta property="og:locale" content="en_GB" />
         <meta property="article:published_time" content={thought.published_at} />
@@ -310,7 +310,7 @@ const ThoughtPost = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${thought.title} | Olumide Adewole`} />
         <meta name="twitter:description" content={thought.excerpt || thought.content.substring(0, 160) + "..."} />
-        <meta name="twitter:image" content="https://olumide.dev/og-image.png" />
+        <meta name="twitter:image" content="https://olumide.dev/og-image.jpg" />
 
         {/* Structured Data (JSON-LD) */}
         <script type="application/ld+json">

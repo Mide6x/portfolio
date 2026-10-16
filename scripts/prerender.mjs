@@ -68,7 +68,7 @@ const buildThoughtMeta = (thought) => {
     <meta property="og:url" content="${postUrl}" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
-    <meta property="og:image" content="${siteUrl}/og-image.png" />
+    <meta property="og:image" content="${siteUrl}/og-image.jpg" />
     <meta property="og:site_name" content="Olumide Adewole" />
     <meta property="og:locale" content="en_GB" />
     <meta property="article:published_time" content="${escapeHtml(thought.published_at || "")}" />
@@ -76,7 +76,7 @@ const buildThoughtMeta = (thought) => {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title}" />
     <meta name="twitter:description" content="${description}" />
-    <meta name="twitter:image" content="${siteUrl}/og-image.png" />
+    <meta name="twitter:image" content="${siteUrl}/og-image.jpg" />
   `.trim();
 };
 
@@ -112,7 +112,7 @@ const buildThoughtsIndexMeta = () => `
   <meta property="og:url" content="${siteUrl}/thoughts" />
   <meta property="og:title" content="Technical Thoughts | Olumide Adewole" />
   <meta property="og:description" content="Research notes and technical writing on AI engineering, climate analytics, LLMs, and modern software development." />
-  <meta property="og:image" content="${siteUrl}/og-image.png" />
+  <meta property="og:image" content="${siteUrl}/og-image.jpg" />
 `.trim();
 
 const buildThoughtsIndexMarkup = (thoughts) => `

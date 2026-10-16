@@ -58,7 +58,7 @@ const Thoughts = () => {
         <meta property="og:url" content="https://olumide.dev/thoughts" />
         <meta property="og:title" content="Journal | Olumide Adewole" />
         <meta property="og:description" content="Notes on work, life, questions, and whatever else is asking to be written down." />
-        <meta property="og:image" content="https://olumide.dev/og-image.png" />
+        <meta property="og:image" content="https://olumide.dev/og-image.jpg" />
 
         <script type="application/ld+json">
           {JSON.stringify({
