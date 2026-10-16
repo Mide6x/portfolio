@@ -5,11 +5,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        wixLight: '#FAFAFA',
-        wixWhite: '#FFFFFF',
-        wixText: '#161616',
-        wixTextSecondary: '#6b7280',
-        wixAccent: '#0A58CA',
+        wixLight: '#f6f0e5',
+        wixWhite: '#fbf7ef',
+        wixText: '#332c22',
+        wixTextSecondary: '#6e675c',
+        wixAccent: '#596b38',
         
         wixDark: '#0f1011',
         wixDarkCard: '#1a1b1d',

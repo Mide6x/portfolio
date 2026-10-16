@@ -48,29 +48,31 @@ const Thoughts = () => {
   }, [fetchThoughts, initialThoughts.length]);
 
   return (
-    <section className="py-20 min-h-screen bg-wixLight dark:bg-wixDark transition-colors">
+    <section className="journal-page">
       <Helmet>
-        <title>Technical Thoughts | Olumide Adewole</title>
-        <meta name="description" content="Research notes and technical writing on AI engineering, climate analytics, LLMs, and modern software development." />
+        <title>Journal | Olumide Adewole</title>
+        <meta name="description" content="Notes on work, life, questions, and whatever else is asking to be written down." />
         <link rel="canonical" href="https://olumide.dev/thoughts" />
 
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://olumide.dev/thoughts" />
-        <meta property="og:title" content="Technical Thoughts | Olumide Adewole" />
-        <meta property="og:description" content="Research notes and technical writing on AI engineering, climate analytics, LLMs, and modern software development." />
+        <meta property="og:title" content="Journal | Olumide Adewole" />
+        <meta property="og:description" content="Notes on work, life, questions, and whatever else is asking to be written down." />
         <meta property="og:image" content="https://olumide.dev/og-image.png" />
 
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Blog",
-            "name": "Technical Thoughts",
+            "name": "Journal",
             "url": "https://olumide.dev/thoughts",
           })}
         </script>
       </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
-        <h1 className="text-4xl font-bold text-wixText dark:text-wixWhite mb-12 tracking-tight">Thoughts</h1>
+      <div className="journal-page__inner">
+        <p className="eyebrow">A place to leave a few things</p>
+        <h1>Journal</h1>
+        <p className="journal-page__intro">Notes on work, life, questions, and whatever else is asking to be written down.</p>
         
         {loading && (
           <div className="space-y-6">

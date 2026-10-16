@@ -1,52 +1,15 @@
-import { motion } from "framer-motion";
-import PropTypes from "prop-types";
-import usePrefersReducedMotion from "../../hooks/usePrefersReducedMotion";
+import { Link } from "react-router-dom";
 
-const Footer = ({ variants }) => {
-  const reduceMotion = usePrefersReducedMotion();
-
+export default function Footer() {
   return (
-    <motion.div
-      variants={variants}
-      className="mx-auto max-w-4xl w-full px-4 sm:px-6 lg:px-8 mb-8 mt-16 space-y-8"
-    >
-      <div className="border-t max-w-6xl border-textSecondary pt-0.5"></div>
-      <motion.footer
-        variants={variants}
-        className="text-center text-textSecondary text-sm mt-20"
-      >
-        <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-          <p className="md:mr-auto">
-            © Olumide Adewole {new Date().getFullYear()}
-          </p>
-          <p className="md:ml-auto">
-            Designed & Built with{" "}
-            {reduceMotion ? (
-              <span className="inline-block text-red-500">❤️</span>
-            ) : (
-              <motion.span
-                initial={{ scale: 1 }}
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 1.5,
-                  repeatType: "reverse",
-                }}
-                className="inline-block text-red-500"
-              >
-                ❤️
-              </motion.span>
-            )}{" "}
-            by Olumide Adewole
-          </p>
-        </div>
-      </motion.footer>
-    </motion.div>
+    <footer className="foot-letter">
+      <p className="foot-letter__close">Until next time,<br /><span>Olumide 💕</span></p>
+      <p className="foot-letter__ps">P.S. — letters back are always welcome at <a href="mailto:adewoleolumide05@gmail.com">adewoleolumide05@gmail.com</a>.</p>
+      <div className="foot-letter__meta">
+        <Link to="/thoughts">Journal</Link>
+        <Link to="/work">Work</Link>
+        <span>© {new Date().getFullYear()}</span>
+      </div>
+    </footer>
   );
-};
-
-Footer.propTypes = {
-  variants: PropTypes.object,
-};
-
-export default Footer;
+}

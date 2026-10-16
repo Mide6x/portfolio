@@ -1,22 +1,15 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import usePrefersReducedMotion, { useIsTouchDevice } from "./hooks/usePrefersReducedMotion";
-import Cursor from "./components/Cursor";
 import Navbar from "./components/nav/Navbar";
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Experience from "./components/Experience";
-import Projects from "./components/Projects";
-import Skills from "./components/Skills";
-import Contact from "./components/Contact";
+import Home from "./components/Home";
+import Work from "./components/Work";
 import Thoughts from "./components/Thoughts";
 import ThoughtPost from "./components/ThoughtPost";
 import CV from "./components/CV";
 import NotFound from "./components/NotFound";
 import Footer from "./components/nav/Footer";
 import AdminPanel from "./components/AdminPanel";
-import OzarkChatbot from "./components/OzarkChatbot";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -29,23 +22,12 @@ const ScrollToTop = () => {
 };
 
 function AppRoutes() {
-  const reduceMotion = usePrefersReducedMotion();
-  const isTouch = useIsTouchDevice();
-
-  const footerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: reduceMotion ? 0 : 0.4 } }
-  };
-
-  const showDecorations = !reduceMotion && !isTouch;
-
   return (
     <div className="relative min-h-screen">
       <Helmet>
-        <title>Olumide Adewole | AI Engineer</title>
-        <meta name="description" content="Portfolio of Olumide Adewole, an AI Engineer specializing in ML and modern web apps." />
+        <title>Olumide Adewole — a small corner of the internet</title>
+        <meta name="description" content="Words, photographs, and the things Olumide is learning to notice." />
       </Helmet>
-      {showDecorations && <Cursor />}
       <Navbar />
       <div className="relative z-10 w-full min-h-screen">
         <ScrollToTop />
@@ -53,27 +35,17 @@ function AppRoutes() {
           <Route
             path="/"
             element={
-              <>
-                <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-                  <Hero />
-                  <Projects />
-                  <Experience />
-                  <About />
-                  <Skills />
-                  <Contact />
-                </main>
-                <Footer variants={footerVariants} />
-              </>
+              <><Home /><Footer /></>
             }
           />
-          <Route path="/thoughts" element={<><Thoughts /><Footer variants={footerVariants} /></>} />
-          <Route path="/thoughts/:slug" element={<><ThoughtPost /><Footer variants={footerVariants} /></>} />
-          <Route path="/cv" element={<><CV /><Footer variants={footerVariants} /></>} />
+          <Route path="/thoughts" element={<><Thoughts /><Footer /></>} />
+          <Route path="/thoughts/:slug" element={<><ThoughtPost /><Footer /></>} />
+          <Route path="/work" element={<><Work /><Footer /></>} />
+          <Route path="/cv" element={<><CV /><Footer /></>} />
           <Route path="/admin" element={<><AdminPanel /></>} />
-          <Route path="*" element={<><NotFound /><Footer variants={footerVariants} /></>} />
+          <Route path="*" element={<><NotFound /><Footer /></>} />
         </Routes>
       </div>
-      <OzarkChatbot />
     </div>
   );
 }
