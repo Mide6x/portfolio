@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -55,8 +56,169 @@ PhotoSlot.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
+function BackyardCover({ photo, onOpen, buttonRef }) {
+  const [hasImageError, setHasImageError] = useState(false);
+
+  return (
+    <button
+      ref={buttonRef}
+      className="backyard-review__cover"
+      type="button"
+      onClick={onOpen}
+      aria-label="Open the backyard greenery photo series"
+    >
+      {!hasImageError && (
+        <img
+          src={photo.fullUrl}
+          alt={photo.alt}
+          loading="lazy"
+          decoding="async"
+          onError={() => setHasImageError(true)}
+        />
+      )}
+      <span className="backyard-review__cover-note" aria-hidden="true">
+        <span>Photo review</span>
+        <b>8 studies <i>↗</i></b>
+      </span>
+      {hasImageError && <span className="backyard-review__unavailable">Image unavailable</span>}
+    </button>
+  );
+}
+
+BackyardCover.propTypes = {
+  photo: PropTypes.shape({
+    alt: PropTypes.string.isRequired,
+    fullUrl: PropTypes.string.isRequired,
+  }).isRequired,
+  onOpen: PropTypes.func.isRequired,
+  buttonRef: PropTypes.shape({ current: PropTypes.any }),
+};
+
+function BackyardReview({ photos }) {
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [hasImageError, setHasImageError] = useState(false);
+  const closeButtonRef = useRef(null);
+  const coverButtonRef = useRef(null);
+  const dialogPanelRef = useRef(null);
+  const activePhoto = activeIndex === null ? null : photos[activeIndex];
+  const isOpen = activePhoto !== null;
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const coverButton = coverButtonRef.current;
+    const appRoot = document.getElementById("root");
+    const wasInert = appRoot?.inert;
+    const previousAriaHidden = appRoot?.getAttribute("aria-hidden");
+    const getFocusableElements = () => Array.from(
+      dialogPanelRef.current?.querySelectorAll("a[href], button:not([disabled])") || [],
+    );
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setActiveIndex(null);
+      if (event.key === "ArrowLeft") setActiveIndex((index) => (index - 1 + photos.length) % photos.length);
+      if (event.key === "ArrowRight") setActiveIndex((index) => (index + 1) % photos.length);
+      if (event.key === "Tab") {
+        const focusable = getFocusableElements();
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (!first || !last) return;
+        if (!dialogPanelRef.current?.contains(document.activeElement)) {
+          event.preventDefault();
+          first.focus();
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    if (appRoot) {
+      appRoot.inert = true;
+      appRoot.setAttribute("aria-hidden", "true");
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    closeButtonRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      if (appRoot) {
+        appRoot.inert = wasInert || false;
+        if (previousAriaHidden === null) appRoot.removeAttribute("aria-hidden");
+        else appRoot.setAttribute("aria-hidden", previousAriaHidden);
+      }
+      document.removeEventListener("keydown", handleKeyDown);
+      coverButton?.focus();
+    };
+  }, [isOpen, photos.length]);
+
+  useEffect(() => {
+    setHasImageError(false);
+  }, [activePhoto?.id]);
+
+  const move = (offset) => {
+    setActiveIndex((index) => (index + offset + photos.length) % photos.length);
+  };
+
+  return (
+    <section className="diary-section backyard-review" aria-labelledby="backyard-title">
+      <div className="backyard-review__header">
+        <div>
+          <p className="eyebrow">A backyard study</p>
+          <h2 id="backyard-title">Green after rain.</h2>
+        </div>
+        <p>A small exercise in noticing — damp leaves, low cloud, and the way an ordinary view can hold a feeling for a moment.</p>
+      </div>
+
+      <BackyardCover photo={photos[0]} onOpen={() => setActiveIndex(0)} buttonRef={coverButtonRef} />
+
+      {isOpen && createPortal(
+        <div className="backyard-lightbox" role="dialog" aria-modal="true" aria-labelledby="backyard-lightbox-title">
+          <button className="backyard-lightbox__backdrop" type="button" onClick={() => setActiveIndex(null)} aria-label="Close photo gallery" />
+          <div ref={dialogPanelRef} className="backyard-lightbox__panel">
+            <header className="backyard-lightbox__topline">
+              <p id="backyard-lightbox-title">Backyard greenery <span>/{activePhoto.number}</span></p>
+              <button ref={closeButtonRef} className="backyard-lightbox__close" type="button" onClick={() => setActiveIndex(null)}>Close <span aria-hidden="true">×</span></button>
+            </header>
+            <div className="backyard-lightbox__image-wrap">
+              {!hasImageError ? (
+                <a href={activePhoto.fullUrl} target="_blank" rel="noreferrer" aria-label={`Open study ${activePhoto.number} original in a new tab`}>
+                  <img src={activePhoto.fullUrl} alt={activePhoto.alt} decoding="async" onError={() => setHasImageError(true)} />
+                </a>
+              ) : <p className="backyard-review__unavailable">This study is unavailable.</p>}
+            </div>
+            <footer className="backyard-lightbox__footer">
+              <p>{activePhoto.alt}</p>
+              <div className="backyard-lightbox__controls">
+                <button type="button" onClick={() => move(-1)} aria-label="Previous photograph">← Previous</button>
+                <a href={activePhoto.fullUrl} target="_blank" rel="noreferrer">Original ↗</a>
+                <button type="button" onClick={() => move(1)} aria-label="Next photograph">Next →</button>
+              </div>
+            </footer>
+          </div>
+        </div>,
+        document.body,
+      )}
+    </section>
+  );
+}
+
+BackyardReview.propTypes = {
+  photos: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+    alt: PropTypes.string.isRequired,
+    fullUrl: PropTypes.string.isRequired,
+  })).isRequired,
+};
+
 export default function Home() {
   const [photos, setPhotos] = useState(photoSlots);
+  const [backyardPhotos, setBackyardPhotos] = useState([]);
 
   useEffect(() => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5002";
@@ -68,6 +230,14 @@ export default function Home() {
         previewUrl: new URL(item.previewUrl, apiBaseUrl).toString(),
         fullUrl: item.fullUrl,
       }))))
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5002";
+    fetch(`${apiBaseUrl}/api/backyard-greenery`)
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("Backyard study unavailable")))
+      .then((items) => setBackyardPhotos(items.filter((item) => item?.id && item?.number && item?.alt && item?.fullUrl)))
       .catch(() => undefined);
   }, []);
 
@@ -113,6 +283,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {backyardPhotos.length > 0 && <BackyardReview photos={backyardPhotos} />}
 
       <section className="diary-section reading-section" aria-labelledby="reading-title">
         <p className="eyebrow">On the shelf</p>

@@ -52,6 +52,33 @@ body { overflow-x: clip; }
 .photo-slot:nth-child(5) .photo-slot__paper { background: oklch(84% 0.035 253); }
 .photo-slot:nth-child(6) .photo-slot__paper { background: oklch(90% 0.038 340); min-height: 16rem; }
 @media (hover: hover) and (pointer: fine) { .photo-slot:hover .photo-slot__paper { background: var(--color-accent-soft); transform: rotate(-.6deg); } }
+.backyard-review { max-width: 66rem; }
+.backyard-review__header { display: grid; gap: var(--space-lg); align-items: end; }
+.backyard-review__header > p { color: var(--color-muted); font-size: var(--text-md); line-height: 1.55; max-width: 31rem; }
+.backyard-review__cover { appearance: none; background: var(--color-paper-deep); border: var(--rule) solid var(--color-faint); color: var(--color-ink); cursor: zoom-in; display: block; margin-top: var(--space-xl); overflow: hidden; padding: 0; position: relative; text-align: left; width: min(100%, 52rem); }
+.backyard-review__cover img { aspect-ratio: 16 / 9; display: block; filter: saturate(.8) contrast(.96); object-fit: cover; transition: filter var(--dur-medium) var(--ease-out), transform var(--dur-medium) var(--ease-out); width: 100%; }
+.backyard-review__cover-note { align-items: end; background: var(--color-paper); border-top: var(--rule) solid var(--color-faint); display: flex; font-size: var(--text-xs); justify-content: space-between; left: 0; letter-spacing: .015em; padding: var(--space-sm) var(--space-md); position: absolute; right: 0; bottom: 0; }
+.backyard-review__cover-note b { font-weight: 500; }
+.backyard-review__cover-note i { color: var(--color-accent); font-size: var(--text-sm); font-style: normal; margin-left: var(--space-2xs); }
+.backyard-review__cover:focus-visible, .backyard-lightbox button:focus-visible, .backyard-lightbox a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.backyard-review__cover:hover img { filter: saturate(1) contrast(1); transform: scale(1.015); }
+.backyard-review__unavailable { align-items: center; color: var(--color-muted); display: flex; font-size: var(--text-sm); justify-content: center; min-height: 15rem; padding: var(--space-xl); }
+.backyard-lightbox { align-items: center; display: flex; inset: 0; justify-content: center; padding: var(--space-md); position: fixed; z-index: 30; }
+.backyard-lightbox__backdrop { background: rgb(35 36 30 / .78); border: 0; inset: 0; position: absolute; }
+.backyard-lightbox__panel { background: var(--color-paper); border: var(--rule) solid var(--color-faint); box-shadow: 0 1.5rem 4rem rgb(24 25 19 / .28); max-height: calc(100dvh - 2rem); max-width: 70rem; overflow: auto; position: relative; width: 100%; }
+.backyard-lightbox__topline, .backyard-lightbox__footer { align-items: center; display: flex; gap: var(--space-md); justify-content: space-between; padding: var(--space-sm) var(--space-md); }
+.backyard-lightbox__topline { border-bottom: var(--rule) solid var(--color-faint); font-size: var(--text-xs); }
+.backyard-lightbox__topline p span { color: var(--color-muted); }
+.backyard-lightbox__close, .backyard-lightbox__controls button, .backyard-lightbox__controls a { background: transparent; border: 0; color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-xs); padding: var(--space-2xs); text-decoration: none; }
+.backyard-lightbox__close span { color: var(--color-accent); font-size: var(--text-lg); line-height: .7; vertical-align: -.08em; }
+.backyard-lightbox__close:hover, .backyard-lightbox__controls button:hover, .backyard-lightbox__controls a:hover { color: var(--color-accent); }
+.backyard-lightbox__image-wrap { background: oklch(28% .025 114); display: grid; max-height: min(67dvh, 46rem); min-height: 12rem; place-items: center; }
+.backyard-lightbox__image-wrap a { display: grid; max-height: inherit; }
+.backyard-lightbox__image-wrap img { display: block; max-height: min(67dvh, 46rem); max-width: 100%; object-fit: contain; }
+.backyard-lightbox__footer { align-items: end; border-top: var(--rule) solid var(--color-faint); flex-wrap: wrap; }
+.backyard-lightbox__footer > p { color: var(--color-muted); font-size: var(--text-xs); line-height: 1.4; max-width: 24rem; }
+.backyard-lightbox__controls { display: flex; gap: var(--space-sm); margin-left: auto; }
+.backyard-lightbox__controls a { border-left: var(--rule) solid var(--color-faint); border-right: var(--rule) solid var(--color-faint); padding-left: var(--space-sm); padding-right: var(--space-sm); }
 .reading-section { max-width: 62rem; }
 .reading-now span { color: var(--color-accent); display: block; margin-bottom: var(--space-xs); text-transform: uppercase; font-size: var(--text-xs); }
 .book-list { counter-reset: books; margin-top: var(--space-xl); }
@@ -80,6 +107,8 @@ body { overflow-x: clip; }
 @media (min-width: 48rem) {
   .section-row { grid-template-columns: minmax(0, 1fr) minmax(13rem, .42fr); }
   .photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .backyard-review__header { grid-template-columns: minmax(0, 1fr) minmax(15rem, .52fr); }
+  .backyard-review__cover { --backyard-cover-inset: clamp(0rem, 9vw, 7rem); margin-left: var(--backyard-cover-inset); width: min(calc(100% - var(--backyard-cover-inset)), 52rem); }
   .book-list li { grid-template-columns: 3.5rem minmax(0, 1.35fr) minmax(0, .65fr); align-items: baseline; }
   .book-list small { grid-column: auto; text-align: right; }
 }
