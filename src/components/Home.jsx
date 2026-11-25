@@ -22,6 +22,17 @@ const photoSlots = [
   ["07", "one more way of looking"],
 ].map(([number, caption]) => ({ number, caption }));
 
+const toSafeHttpUrl = (value, baseUrl) => {
+  if (typeof value !== "string" || !value.trim()) return "";
+
+  try {
+    const url = new URL(value, baseUrl);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+};
+
 function PhotoSlot({ photo, index }) {
   const [hasPhoto, setHasPhoto] = useState(false);
   const source = photo.previewUrl || `/glimpses/${photo.number}.jpg`;
@@ -38,7 +49,7 @@ function PhotoSlot({ photo, index }) {
   return (
     <figure className={`photo-slot photo-slot--${index + 1}`}>
       <div className="photo-slot__paper">
-        {photo.fullUrl ? <a href={photo.fullUrl} target="_blank" rel="noreferrer" aria-label={`Open ${photo.caption} in full size`}>{image}</a> : image}
+        {photo.fullUrl ? <a href={photo.fullUrl} target="_blank" rel="noopener noreferrer" aria-label={`Open ${photo.caption} in full size`}>{image}</a> : image}
         {!hasPhoto && <span>{photo.number}</span>}
       </div>
       <figcaption>{photo.caption}</figcaption>
@@ -168,10 +179,10 @@ function BackyardReview({ photos }) {
     <section className="diary-section backyard-review" aria-labelledby="backyard-title">
       <div className="backyard-review__header">
         <div>
-          <p className="eyebrow">A backyard study</p>
+          <p className="eyebrow">Entry 04 · after rain</p>
           <h2 id="backyard-title">Green after rain.</h2>
         </div>
-        <p>A small exercise in noticing — damp leaves, low cloud, and the way an ordinary view can hold a feeling for a moment.</p>
+        <p>A note from a rainy walk — damp leaves, low cloud, and the way an ordinary view can hold a feeling for a moment.</p>
       </div>
 
       <BackyardCover photo={photos[0]} onOpen={() => setActiveIndex(0)} buttonRef={coverButtonRef} />
@@ -186,7 +197,7 @@ function BackyardReview({ photos }) {
             </header>
             <div className="backyard-lightbox__image-wrap">
               {!hasImageError ? (
-                <a href={activePhoto.fullUrl} target="_blank" rel="noreferrer" aria-label={`Open study ${activePhoto.number} original in a new tab`}>
+                <a href={activePhoto.fullUrl} target="_blank" rel="noopener noreferrer" aria-label={`Open study ${activePhoto.number} original in a new tab`}>
                   <img src={activePhoto.fullUrl} alt={activePhoto.alt} decoding="async" onError={() => setHasImageError(true)} />
                 </a>
               ) : <p className="backyard-review__unavailable">This study is unavailable.</p>}
@@ -195,7 +206,7 @@ function BackyardReview({ photos }) {
               <p>{activePhoto.alt}</p>
               <div className="backyard-lightbox__controls">
                 <button type="button" onClick={() => move(-1)} aria-label="Previous photograph">← Previous</button>
-                <a href={activePhoto.fullUrl} target="_blank" rel="noreferrer">Original ↗</a>
+                <a href={activePhoto.fullUrl} target="_blank" rel="noopener noreferrer">Original ↗</a>
                 <button type="button" onClick={() => move(1)} aria-label="Next photograph">Next →</button>
               </div>
             </footer>
@@ -224,12 +235,21 @@ export default function Home() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5002";
     fetch(`${apiBaseUrl}/api/photographs`)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error("Photography unavailable")))
-      .then((items) => setPhotos(items.map((item, index) => ({
-        number: String(index + 1).padStart(2, "0"),
-        caption: item.title,
-        previewUrl: new URL(item.previewUrl, apiBaseUrl).toString(),
-        fullUrl: item.fullUrl,
-      }))))
+      .then((items) => {
+        if (!Array.isArray(items)) return;
+
+        const nextPhotos = items
+          .filter((item) => typeof item?.title === "string")
+          .map((item, index) => ({
+            number: String(index + 1).padStart(2, "0"),
+            caption: item.title,
+            previewUrl: toSafeHttpUrl(item.previewUrl, apiBaseUrl),
+            fullUrl: toSafeHttpUrl(item.fullUrl, apiBaseUrl),
+          }))
+          .filter((item) => item.previewUrl || item.fullUrl);
+
+        if (nextPhotos.length > 0) setPhotos(nextPhotos);
+      })
       .catch(() => undefined);
   }, []);
 
@@ -237,7 +257,14 @@ export default function Home() {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5002";
     fetch(`${apiBaseUrl}/api/backyard-greenery`)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error("Backyard study unavailable")))
-      .then((items) => setBackyardPhotos(items.filter((item) => item?.id && item?.number && item?.alt && item?.fullUrl)))
+      .then((items) => {
+        if (!Array.isArray(items)) return;
+
+        setBackyardPhotos(items.flatMap((item) => {
+          const fullUrl = toSafeHttpUrl(item?.fullUrl, apiBaseUrl);
+          return item?.id && item?.number && item?.alt && fullUrl ? [{ ...item, fullUrl }] : [];
+        }));
+      })
       .catch(() => undefined);
   }, []);
 
@@ -245,37 +272,46 @@ export default function Home() {
     <main className="diary-shell">
       <section className="letter-hero" aria-labelledby="home-title">
         <div className="letter-hero__copy">
+          <p className="eyebrow">Entry 01 · field notes</p>
           <h1 id="home-title">Hello, I&apos;m Olumide.</h1>
           <div className="letter-hero__body">
             <p>
-              This is a place for the things I&apos;m learning to notice: words that stay with me,
-              pictures I take, and the occasional thing I make.
+              I&apos;m a software engineer working around AI, useful tools, and the unglamorous
+              parts of keeping systems secure.
             </p>
             <p>
-              There&apos;s no rush here. I&apos;m glad you found your way in.
+              This is where I put the things I&apos;m still learning to notice: words that follow me
+              home, photographs from walks, and things I make before they&apos;re quite finished.
             </p>
+            <p>Come in, have a look around. I&apos;m glad you found your way here.</p>
           </div>
-          <p className="letter-signoff">— O.</p>
+          <p className="letter-signoff">— O., somewhere between releases and notebooks.</p>
         </div>
+        <aside className="letter-hero__index" aria-label="Diary entry details">
+          <span>Notes from the desk</span>
+          <time dateTime="2026-11-25">25 / 11 / 26</time>
+          <span>software engineer · observer</span>
+          <span aria-hidden="true">↘</span>
+        </aside>
       </section>
 
       <section className="diary-section lately" aria-labelledby="lately-title">
-        <p className="eyebrow">Lately</p>
-        <h2 id="lately-title">Making more room for small things.</h2>
+        <p className="eyebrow">Entry 02 · lately</p>
+        <h2 id="lately-title">Trying to notice what is actually there.</h2>
         <div className="lately__notes">
-          <p>Taking my camera on ordinary walks.</p>
-          <p>Keeping a little more time between a thought and an answer.</p>
-          <p>Letting curiosity be enough of a reason to begin.</p>
+          <p>Taking my camera on ordinary walks, and missing a few good shots.</p>
+          <p>Leaving a bit of space between a thought and an answer.</p>
+          <p>Starting before I know quite what I&apos;m making.</p>
         </div>
       </section>
 
       <section className="diary-section photo-section" aria-labelledby="photos-title">
         <div className="section-row">
           <div>
-            <p className="eyebrow">From the camera</p>
-            <h2 id="photos-title">Small records of being here.</h2>
+            <p className="eyebrow">Entry 03 · from the camera</p>
+            <h2 id="photos-title">Things I carried home from outside.</h2>
           </div>
-          <p className="section-aside">A lightweight preview opens the full image in a new tab.</p>
+          <p className="section-aside">The thumbnails are only a first look; open one when you want the full frame.</p>
         </div>
         <div className="photo-grid" aria-label="Photography placeholders">
           {photos.map((photo, index) => (
@@ -287,7 +323,7 @@ export default function Home() {
       {backyardPhotos.length > 0 && <BackyardReview photos={backyardPhotos} />}
 
       <section className="diary-section reading-section" aria-labelledby="reading-title">
-        <p className="eyebrow">On the shelf</p>
+        <p className="eyebrow">Entry 05 · on the shelf</p>
         <div className="section-row">
           <h2 id="reading-title">Books I&apos;ve carried with me recently.</h2>
           <p className="reading-now"><span>Reading now</span> The Language of God — Francis Collins</p>
@@ -297,22 +333,22 @@ export default function Home() {
             <li key={title}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <em>{title}</em>
-              <small>{author}</small>
+              <span className="book-list__author">{author}</span>
             </li>
           ))}
         </ol>
       </section>
 
       <section className="diary-section journal-callout" aria-labelledby="journal-title">
-        <p className="eyebrow">Words, too</p>
+        <p className="eyebrow">Entry 06 · words, too</p>
         <h2 id="journal-title">Some thoughts need a little more room.</h2>
         <p>Notes on work, life, questions, and whatever else is asking to be written down.</p>
         <Link className="text-link" to="/thoughts">Visit the journal <span aria-hidden="true">→</span></Link>
       </section>
 
       <section className="work-whisper" aria-labelledby="work-title">
-        <p id="work-title">I also make things for work.</p>
-        <Link className="text-link" to="/work">A look at that side of things <span aria-hidden="true">→</span></Link>
+        <p id="work-title">The part where I write software.</p>
+        <Link className="text-link" to="/work">See the work side of things <span aria-hidden="true">→</span></Link>
       </section>
     </main>
   );

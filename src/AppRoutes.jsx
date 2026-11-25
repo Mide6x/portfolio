@@ -25,8 +25,8 @@ function AppRoutes() {
   return (
     <div className="relative min-h-screen">
       <Helmet>
-        <title>Mides corner On the internet.</title>
-        <meta name="description" content="click this link if youre cool." />
+        <title>Olumide Adewole — Software engineer&apos;s notebook</title>
+        <meta name="description" content="Olumide Adewole is a software engineer keeping notes on systems, photographs, books, and the things he is learning to notice." />
       </Helmet>
       <Navbar />
       <div className="relative z-10 w-full min-h-screen">

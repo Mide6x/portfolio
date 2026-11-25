@@ -1,4 +1,12 @@
 /* Hallmark · genre: editorial · macrostructure: Letter · theme: Almanac · tone: calm, nostalgic, playful · anchor hue: muted olive · enrichment: none · nav: N9 · footer: Ft6 */
+@font-face {
+  font-family: "Sorts Mill Goudy";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://s0.wp.com/wp-content/themes/pub/ury/assets/fonts/sorts-mill-goudy/sorts-mill-goudy-400-normal.woff2") format("woff2");
+}
+
 :root {
   --color-paper: oklch(95.5% 0.018 83);
   --color-paper-deep: oklch(91.5% 0.027 80);
@@ -9,8 +17,9 @@
   --color-accent-soft: oklch(82% 0.065 116);
   --color-focus: oklch(47% 0.11 147);
   --color-sun: oklch(71% 0.11 64);
-  --font-display: "Nunito Sans", ui-sans-serif, sans-serif;
-  --font-body: "Nunito Sans", ui-sans-serif, sans-serif;
+  --wp--preset--font-family--sorts-mill-goudy: "Sorts Mill Goudy", serif;
+  --font-display: var(--wp--preset--font-family--sorts-mill-goudy);
+  --font-body: var(--wp--preset--font-family--sorts-mill-goudy);
   --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
@@ -23,9 +32,9 @@
   --text-xs: 0.72rem;
   --text-sm: 0.84rem;
   --text-md: 1rem;
-  --text-lg: clamp(1.35rem, 2vw, 1.8rem);
-  --text-xl: clamp(2.25rem, 5vw, 4.6rem);
-  --text-display: clamp(3.2rem, 9vw, 8rem);
+  --text-lg: clamp(1.2rem, 1.8vw, 1.6rem);
+  --text-xl: clamp(2rem, 4.5vw, 4.1rem);
+  --text-display: clamp(2.8rem, 8vw, 6.8rem);
   --rule: 1px;
   --radius-sm: 0.25rem;
   --dur-short: 160ms;
